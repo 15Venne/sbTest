@@ -54,7 +54,8 @@ public class AuthorizationFilter implements Filter {
         String token = request.getParameter("token");
         System.out.println("token: " + token);
         
-        if(token == null) {
+        if((token == null || (!token.equals("777")) )  &&   (!requestUri.contains("/play"))) {
+        	
         	{
         		try {
         			HttpServletResponse t = (HttpServletResponse) response;

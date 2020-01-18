@@ -19,7 +19,7 @@ import com.google.common.collect.Maps;
  */
 @Configuration
 @SpringBootApplication
-@ComponentScan({ "com.fspringboot.SpringBootDemo"})
+@ComponentScan({"com.fspringboot.SpringBootDemo"})
 public class App 
 {
     public static void main( String[] args )

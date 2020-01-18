@@ -3,12 +3,15 @@ package com.fspringboot.SpringBootDemo.Controller;
 
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,11 +23,21 @@ import com.fspringboot.SpringBootDemo.entity.User;
 
 @RestController
 @EnableAutoConfiguration
-@RequestMapping("/hello")
+@RequestMapping("/venne")
 public class Controller{
 	
 	@Autowired
 	MongoTemplate mongotemplate;
+	
+	/**
+     * 首页
+     *
+     * @return
+     */
+    @GetMapping({"/", "/index", "index.html"})
+    public String index(HttpServletRequest request) {
+    	return "web/index";
+    }
 	
 	
 	@RequestMapping("/getUser")
@@ -51,23 +64,38 @@ public class Controller{
 		return object;
 	}
 	
-	@RequestMapping("/insert")
-	public JSONObject helloWorld(@RequestParam(defaultValue = "0")String name) {
-		User user = new User();
-		
-		user.setName(name);
-		user.setAge(22);
-		user.setPassword("456789");
-		user.setPhone("13999999999");
-		user.setSex(1);
-		user.setUsername("v314652328");
-		mongotemplate.insert(user);
-		
+	@RequestMapping("/addUser")
+	public JSONObject helloWorld(@RequestParam(defaultValue = "0")String name,
+								  @RequestParam(defaultValue = "0")int  age,
+								  @RequestParam String password,
+								  @RequestParam(defaultValue = "0")String phone,
+								  @RequestParam(defaultValue = "0")int sex,
+								  @RequestParam(defaultValue = "0")String username) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		//判断是否存在user
+		Query query = new Query();
+		query.addCriteria(Criteria.where("username").is(username));
+		if(mongotemplate.findOne(query, User.class) != null) {
+			map.put("resultCode", -1);
+			map.put("data", "已存在用户");
+			JSONObject object = (JSONObject) JSONObject.toJSON(map);
+			return object;
+		}
+		
+		User user = new User();
+		user.setName(name);
+		user.setAge(age);
+		user.setPassword(password);
+		user.setPhone(phone);
+		user.setSex(sex);
+		user.setUsername(username);
+		mongotemplate.insert(user);
 		
 		map.put("resultCode", 1);
 		JSONObject object = (JSONObject) JSONObject.toJSON(map);
 		return object;
-		
 	}
+	
+	
 }
