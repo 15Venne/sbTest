@@ -1,7 +1,11 @@
 package com.fspringboot.SpringBootDemo.Controller;
 
+import java.util.HashMap;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.alibaba.fastjson.JSONObject;
 
 @Controller
 public class WebController{
@@ -15,5 +19,7 @@ public class WebController{
 	public String login() {
 		return "login";
 	}
+	
+	
 	
 }

@@ -11,20 +11,20 @@ layui.use(['form'], function() {
 
         layer.load(1);
 
-        $.post("/console/login",obj.field, function(data) {
-            if (data.resultCode != 1) {
+        $.post("/venne/play/user/login",obj.field, function(data) {
+            if (data.resultCode == 1) {
                 layer.msg("登录成功",{icon: 1});
                 console.log("Login data:"+JSON.stringify(data))
-                   localStorage.setItem("access_Token",data.data.access_Token);
-                   localStorage.setItem("role",data.data.role);
-                   localStorage.setItem("account",data.data.account);
-                   localStorage.setItem("adminId",data.data.adminId);
-                   localStorage.setItem("apiKey",data.data.apiKey);
-                   localStorage.setItem("nickname",data.data.nickname);
-                   localStorage.setItem("registerInviteCode",data.data.registerInviteCode); //系统邀请码模式
+                  // localStorage.setItem("access_Token",data.data.access_Token);
+                  // localStorage.setItem("role",data.data.role);
+                  // localStorage.setItem("account",data.data.account);
+                  // localStorage.setItem("adminId",data.data.adminId);
+                  // localStorage.setItem("apiKey",data.data.apiKey);
+                  // localStorage.setItem("nickname",data.data.nickname);
+                  // localStorage.setItem("registerInviteCode",data.data.registerInviteCode); //系统邀请码模式
 
                 setTimeout(function() {
-                    location.replace("/play/index.html");
+                    location.replace("/play");
                 }, 1000);
                 
             } else if(data.resultCode == 0) {

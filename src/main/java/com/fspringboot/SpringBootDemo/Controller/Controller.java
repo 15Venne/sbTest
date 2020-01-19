@@ -98,5 +98,15 @@ public class Controller{
 		return object;
 	}
 	
+	@RequestMapping("/play/user/login")
+	public JSONObject userLogin() {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("resultCode", 1);
+		
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		System.out.println("user_login");
+		return object;
+	}
+	
 	
 }
