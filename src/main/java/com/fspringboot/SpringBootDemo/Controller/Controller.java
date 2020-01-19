@@ -29,19 +29,20 @@ public class Controller{
 	@Autowired
 	MongoTemplate mongotemplate;
 	
-	/**
-     * 首页
-     *
-     * @return
-     */
-    @GetMapping({"/", "/index", "index.html"})
-    public String index(HttpServletRequest request) {
-    	return "web/index";
-    }
+	@RequestMapping("/ping")
+	public JSONObject ping() {
+		
+		
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("resultCode", 1);
+		
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		return object;
+	}
 	
 	
 	@RequestMapping("/getUser")
-	public JSONObject hello() {
+	public JSONObject getUser() {
 		
 		JSON json = new JSONObject();
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -65,7 +66,7 @@ public class Controller{
 	}
 	
 	@RequestMapping("/addUser")
-	public JSONObject helloWorld(@RequestParam(defaultValue = "0")String name,
+	public JSONObject addUser(@RequestParam(defaultValue = "0")String name,
 								  @RequestParam(defaultValue = "0")int  age,
 								  @RequestParam String password,
 								  @RequestParam(defaultValue = "0")String phone,
