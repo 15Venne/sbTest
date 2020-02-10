@@ -21,7 +21,7 @@ layui.use(['form'], function() {
                   // localStorage.setItem("adminId",data.data.adminId);
                   // localStorage.setItem("apiKey",data.data.apiKey);
                   // localStorage.setItem("nickname",data.data.nickname);
-                  // localStorage.setItem("registerInviteCode",data.data.registerInviteCode); //系统邀请码模式
+                  
 
                 setTimeout(function() {
                     location.replace("/play");

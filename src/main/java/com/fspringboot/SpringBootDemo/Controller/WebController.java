@@ -20,6 +20,11 @@ public class WebController{
 		return "login";
 	}
 	
+	@RequestMapping("/admin")
+	public String admin() {
+		return "admin";
+	}
+	
 	
 	
 }

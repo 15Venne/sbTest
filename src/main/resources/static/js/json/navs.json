@@ -1,0 +1,46 @@
+{
+	"contentManagement": [
+		
+		{
+			"title": "用户管理",
+			"icon":"&#xe66f;",
+			"href": "/html/userList.html",
+			"spread": false
+		},
+		{
+			"title": "卡组管理",
+			"icon": "&#xe634;",
+			"href": "",
+			"spread": false,
+			"cardManagement": true,
+			"children": [
+				{
+					"title": "卡组A",
+					"icon": "&#xe857;",
+					"href": "/html/cardA.html",
+					"spread": false
+				},
+				{
+					"title": "卡组B",
+					"icon": "&#xe857;",
+					"href": "/html/cardB.html",
+					"spread": false
+				},
+				{
+					"title": "卡组C",
+					"icon": "&#xe857;",
+					"href": "/html/cardC.html",
+					"spread": false
+				},
+				{
+					"title": "卡组D",
+					"icon": "&#xe65e;",
+					"href": "/html/cardD.html",
+					"spread": false
+				}
+			]
+		}		
+	]	
+}
+
+
