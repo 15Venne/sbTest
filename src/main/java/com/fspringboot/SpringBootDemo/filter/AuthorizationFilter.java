@@ -52,6 +52,7 @@ public class AuthorizationFilter implements Filter {
         System.out.println("User-Agent：" + request.getHeader("User-Agent"));
         
         String token = request.getParameter("token");
+        
         System.out.println("token: " + token);
         
         if((token == null || (!token.equals("777")) )  &&   (!requestUri.contains("/play")) && (!requestUri.contains("/js/")) && 

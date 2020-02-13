@@ -21,26 +21,11 @@ function request(url){
 	console.log("apiKey:"+localStorage.getItem("apiKey"));*/
 	/*console.log(localStorage.getItem("access_Token"));*/
 	var obj=localStorage.getItem("apiKey")+time+localStorage.getItem("userId")+localStorage.getItem("access_Token");
-	url=url+"?secret="+$.md5(obj)+"&time="+time;
+	//url=url+"?secret="+$.md5(obj)+"&time="+time;
+	url=url+"?token=777";
 	return url;
 }
-var Config={
-	getConfig:function(){
-		if(ConfigData==null){
-			$.ajax({
-				type:'POST',
-				url:'/config',
-				data:{},
-				async:false,
-				success:function(result){
-					ConfigData=result.data;
-				}
-			})
-		}
-		console.log(ConfigData);
-		return ConfigData;
-	}
-}
+
 
 var Common = {
 	// layui table重载刷新 解决零界值删除不刷新到上页的问题(支持删除，多选删除)

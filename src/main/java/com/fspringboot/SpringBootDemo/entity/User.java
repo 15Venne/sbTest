@@ -25,6 +25,86 @@ public class User{
 	
 	private Integer age=0;
 	
+	private Double yonney;
+	
+	private Integer isBan=0;
+	
+	private Long createTime;
+	
+	private Long updateTime;
+	
+	private Long birthday;
+	
+	private Integer gachaponCount;
+	
+	private Integer level;
+	
+	private Integer experiences;
+	
+	public Integer getLevel() {
+		return level;
+	}
+	
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+	
+	public Integer getExperiences() {
+		return experiences;
+	}
+	
+	public void setExperiences(Integer experiences) {
+		this.experiences = experiences;
+	}
+	
+	public Integer getGachaponCount() {
+		return gachaponCount;
+	}
+	
+	public void setGachaponCount(Integer gachaponCount) {
+		this.gachaponCount = gachaponCount;
+	}
+	
+	public Long getBirthday() {
+		return birthday;
+	}
+	
+	public void setBrithday(Long birthday) {
+		this.birthday = birthday;
+	}
+	
+	public Long getUpdateTime() {
+		return updateTime;
+	}
+	
+	public void setUpdateTime(Long updateTime) {
+		this.updateTime = updateTime;
+	}
+	
+	public Long getCreateTime() {
+		return createTime;
+	}
+	
+	public void setCreateTime(Long createTime) {
+		this.createTime = createTime;
+	}
+	
+	public Integer getIsBan() {
+		return isBan;
+	}
+	
+	public void setIsBan(Integer isBan) {
+		this.isBan = isBan;
+	}
+	
+	public Double getYonney() {
+		return yonney;
+	}
+	
+	public void setYonney(Double yonney) {
+		this.yonney = yonney;
+	}
+	
 	public String getId() {
 		return id;
 	}
