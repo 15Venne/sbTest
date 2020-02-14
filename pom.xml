@@ -44,6 +44,19 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-mongodb</artifactId>
 	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>fastjson</artifactId>
+		    <version>1.2.47</version>
+		</dependency>
+	
+	<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>17.0</version>
+		</dependency>
 
   </dependencies>
   
@@ -66,7 +79,28 @@
 				<encoding>UTF-8</encoding>
 			</configuration>
 		</plugin>
+		<!--  	
+		<plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+ 		  <artifactId>maven-war-plugin</artifactId>
+		  <configuration>
+			<webResources>
+                        <resource>
+                            <directory>${project.basedir}/lib</directory>
+                            <targetPath>WEB-INF/lib</targetPath>
+                            <filtering>false</filtering>
+                            <includes>
+                                <include>**/*.jar</include>
+                            </includes>
+                        </resource>
+           </webResources>
+	    </configuration>
+	    <version>2.1.1</version>
+	  </plugin>
+	  -->
+		
 			
   	</plugins>
+  	
   </build>
 </project>

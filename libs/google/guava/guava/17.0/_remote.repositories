@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu Jul 18 16:56:52 CST 2019
+guava-17.0-sources.jar>central=
+guava-17.0.jar>central=
+guava-17.0.pom>central=

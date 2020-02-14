@@ -109,9 +109,9 @@ h2.method{ font-size:18px; line-height:45px; padding-left:5px;}
     -webkit-border-radius:5px; 
     -moz-border-radius:5px; 
     border-radius:5px; 
-    /*box-shadow:0 0 50px #009688;*/
+    /*box-shadow:0 0 50px #DC143C;*/
 }
-.login_face{ margin:-55px auto 20px; width:100px; height:100px; -webkit-border-radius:50%; -moz-border-radius:50%; border-radius:50%; border:5px solid #fff; overflow:hidden;box-shadow:0 0 30px #009688;}
+.login_face{ margin:-55px auto 20px; width:100px; height:100px; -webkit-border-radius:50%; -moz-border-radius:50%; border-radius:50%; border:5px solid #fff; overflow:hidden;box-shadow:0 0 30px #DC143C;}
 .login_face img{ width:100%;}
 .loginBody .layui-form-item{ position:relative;}
 .loginBody .layui-form-item label{ position:absolute; color:#757575; left:10px; top:9px; line-height:20px; background:#fff; padding:0 5px; font-size:14px; cursor:text;}

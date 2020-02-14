@@ -111,6 +111,8 @@ public class Controller{
 		return object;
 	}
 	
+	
+	/*************************user***************************************************/
 	@RequestMapping("/userList")
 	public JSONObject userList(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int limit) {
@@ -140,7 +142,7 @@ public class Controller{
 	public JSONObject updateUser(@RequestParam(defaultValue = "") String id, @RequestParam(defaultValue = "") String name,
 								@RequestParam(defaultValue = "") String username,@RequestParam(defaultValue = "") int age,
 								@RequestParam(defaultValue = "") String password,@RequestParam(defaultValue = "") int sex,
-								@RequestParam(defaultValue = "") String phone) {
+								@RequestParam(defaultValue = "") String phone, @RequestParam(defaultValue = "") String avatar) {
 		
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		System.out.println("id: " + id);
@@ -170,6 +172,7 @@ public class Controller{
 			user.setLevel(1);
 			user.setUpdateTime(System.currentTimeMillis() / 1000);
 			user.setYonney(0.5);
+			user.setAvatarPic(avatar);
 			
 			mongotemplate.insert(user);
 		}else {
@@ -243,4 +246,13 @@ public class Controller{
 		return object;
 	}
 	
+	/*******************************user*****************************************************/
+	
+	/*******************************pool*****************************************************/
+	
+	/*******************************pool*****************************************************/
+	
+	/*******************************card*****************************************************/
+	
+	/*******************************card*****************************************************/
 }

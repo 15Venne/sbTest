@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu Jul 18 17:34:47 CST 2019
+proto-google-common-protos-1.12.0-sources.jar>central=
+proto-google-common-protos-1.12.0.jar>central=
+proto-google-common-protos-1.12.0.pom>central=

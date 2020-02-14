@@ -21,6 +21,8 @@ public class User{
 	
 	private String name="";
 	
+	private String avatarPic = "";
+	
 	private Integer sex=0;
 	
 	private Integer age=0;
@@ -40,6 +42,16 @@ public class User{
 	private Integer level;
 	
 	private Integer experiences;
+	
+	/*************************************/
+	
+	public String getAvatarPic() {
+		return avatarPic;
+	}
+	
+	public void setAvatarPic(String avatarPic) {
+		this.avatarPic = avatarPic;
+	}
 	
 	public Integer getLevel() {
 		return level;

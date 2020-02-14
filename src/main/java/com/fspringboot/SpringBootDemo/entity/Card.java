@@ -41,6 +41,8 @@ public class Card{
 	//创建时间
 	private Long createTime= 0L;
 	
+	private Long updateTime = 0L;
+	
 	private Integer pool= 2;
 	
 	//作者
@@ -54,6 +56,36 @@ public class Card{
 	
 	//性别？
 	private Integer sex=0;
+	
+	/*标签
+	 * 0000 0001	1
+	 * 0000 0010	2
+	 * 0000 0100	4
+	 * 0000 1000	8
+	 * 0001 0000	16
+	 * 0010 0000	32
+	 * 0100 0000	64
+	 * 1000 0000	128
+	*/
+	private Integer label; 
+	
+	/*****************************************/
+	
+	public Long getUpdateTime() {
+		return updateTime;
+	}
+	
+	public void setUpdateTime(Long updateTime) {
+		this.updateTime = updateTime;
+	}
+	
+	public Integer getLabel() {
+		return label;
+	}
+	
+	public void setLabel(Integer label) {
+		this.label = label;
+	}
 	
 	public String getId() {
 		return id;

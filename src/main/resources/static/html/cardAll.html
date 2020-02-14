@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>卡牌管理</title>
+<link href="/css/layui.css" rel="stylesheet" media="all" />
+</head>
+
+
+<body>
+	<div class="layui-row">
+		<div class="layui-col-md1">&nbsp;</div>
+		<input id="pageCount" type="" name="" style="display: none"/>
+		<div id="cardList" class="layui-col-md10">
+			<div class="card_btn_div" style="margin-top: 2%">
+				<input type="text" name="" class="layui-input nickName" style="width: 15%;display: inline" placeholder="用户昵称"/>
+				<form class="layui-form" action="" style="float: left">				
+				</form>
+				<button class="layui-btn search_card">搜索</button>
+				<button onclick="Card.addCard()" class="layui-btn btn_addCard">新增卡</button>		
+		
+			</div>
+
+			<div id="card_table" class="layui-card" style="margin-top: 1%">
+				<div class="layui-card-header"><p>卡牌列表</p></div>
+				<div class="layui-card-body">
+					<table id="card_list" lay-filter="card_list" style="table-layout:fixed;word-break:break-all;" >
+						
+					</table>
+				</div>
+			</div>
+		
+
+			<!-- 多选操作 -->
+			<script type="text/html" id="toolbarCards">
+				<div class="layui-btn-container">
+					<button id="checkDeleteCardsId" class="layui-btn layui-btn-sm checkDeleteCards" onclick="Card.checkDeleteCards()" lay-event="delete">多选删除</button>
+				</div>
+			</script>
+
+			<!--操作-->
+			<script type="text/html" id="cardListBar">
+				{{#  if(d.cardId < 10100){ }}
+				<a class="layui-btn layui-btn-disabled layui-btn-xs delete" lay-event="delete">删除</a>
+				{{#  }else{  }}
+				<a class="layui-btn layui-btn-danger layui-btn-xs delete" lay-event="delete">删除</a>
+				{{#  } }}
+				{{#  if(d.cardId < 10100){ }}
+				<a class="layui-btn layui-btn-disabled layui-btn-xs update" lay-event="update">修改</a>
+				{{#  }else{  }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs update" lay-event="update">修改</a>
+				{{#  } }}
+													
+			</script>		
+
+			<script type="text/html" id="delChartRecord">
+                <a class="layui-btn layui-btn-danger layui-btn-xs deletechatRecord" lay-event="deletechatRecord">删除</a>
+			</script>		
+
+		</div>
+
+		<!-- 添加用户 -->
+		<div id="addCard" class="layui-col-md10" style="display: none">
+			<div id="addCardTitle" class="layui-card-header">新增卡牌</div>
+			<table class="layui-table">
+				<thead>
+					<tr>
+						<td width="20%">卡牌参数</td>
+						<td>卡牌信息</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>名称</td>
+						<td><input id="id" type="" name="" style="display: none"><input id="cardName" type="" name="" class="layui-input"></td>
+					</tr>
+				
+					<tr>
+						<td>描述</td>
+						<td><input id="disc" type="" name="" class="layui-input"></td>
+					</tr>
+					
+					<tr>
+						<td>图片地址</td>
+						<td><input id="pic" type="" name="" class="layui-input" ></td>
+					</tr>				
+					
+					<tr>
+						<td>ATK</td>
+						<td><input id="atk" type="" name="" class="layui-input"></td>
+					</tr>	
+					
+					<tr>
+						<td>DEF</td>
+						<td><input id="def" type="" name="" class="layui-input"></td>
+					</tr>
+					
+					<tr>
+						<td>标签</td>
+						<td><input id="label" type="" name="" class="layui-input" ></td>
+					</tr>
+					
+					<tr>
+						<td>类别1</td>
+						<td>
+							<form class="layui-form" action="" style="">
+								<div class="layui-form-item">
+									<select id="catagory1" class="layui-select" style="width: 100%">
+										<option selected="selected" value="">无</option>
+										<option value="0">无</option>
+									</select>
+								</div>
+							</form>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>类别2</td>
+						<td>
+							<form class="layui-form" action="" style="">
+								<div class="layui-form-item">
+									<select id="catagory1" class="layui-select" style="width: 100%">
+										<option selected="selected" value="">无</option>
+										<option value="0">无</option>
+									</select>
+								</div>
+							</form>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>类别3</td>
+						<td>
+							<form class="layui-form" action="" style="">
+								<div class="layui-form-item">
+									<select id="catagory1" class="layui-select" style="width: 100%">
+										<option selected="selected" value="">无</option>
+										<option value="0">无</option>
+									</select>
+								</div>
+							</form>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>性别</td>
+						<td>
+							<form class="layui-form" action="" style="">
+								<div class="layui-form-item">
+									<select id="sex" class="layui-select" style="width: 100%">
+										<option selected="selected" value="">请选择</option>
+										<option value="0">女</option>
+										<option value="1">男</option>
+									</select>
+								</div>
+							</form>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>作者</td>
+						<td><input id="auth" type="" name="" class="layui-input" ></td>
+					</tr>
+					
+					
+					
+					
+				</tbody>
+			</table>
+			
+			<div style="display: inline;">
+				<button onclick="Card.commit_addCard()" class="layui-btn">提交</button>
+				<button onclick="Card.button_back()" class="layui-btn layui-btn-primary layui-btn-sm" style="">&lt;&lt;返回</button>
+			</div>
+		</div>
+
+
+	</div>
+
+
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/layui.all.js"></script>
+<script type="text/javascript" src="/js/jquery.md5.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/js/console_ui.js"></script>
+<script type="text/javascript" src="/js/_coolchat-commons.js"></script>
+<script type="text/javascript" src="/js/core.js"></script>
+<script type="text/javascript" src="/js/tripledes.js"></script>
+<script type="text/javascript" src="/js/cardAll.js"></script>
+<!-- <script type="text/javascript" src="/pages/js/console_init.js"></script> -->
+
+
+
+</body>
+</html>

@@ -159,7 +159,7 @@ iframe {
 }
 
 .admin-header-lock-name {
-	color: #009688;
+	color: #DC143C;
 	margin: 8px 0 15px 0;
 }
 
@@ -171,7 +171,7 @@ iframe {
 .admin-header-lock-input {
 	width: 170px;
 	color: #fff;
-	background-color: #009688;
+	background-color: #DC143C;
 	float: left;
 	margin: 0 10px 0 40px;
 	border: none;
@@ -333,7 +333,7 @@ iframe {
 .layui-nav-itemed:before {
 	width: 5px;
 	height: 100%;
-	background-color: #009688;
+	background-color: #DC143C;
 	position: absolute;
 	content: '';
 	left: 0;
