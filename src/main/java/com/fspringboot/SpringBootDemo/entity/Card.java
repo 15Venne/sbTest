@@ -69,7 +69,17 @@ public class Card{
 	*/
 	private Integer label; 
 	
+	private Integer rare;//0,all; 1,N; 2,R; 3,SR, 4,SSR, 4
+	
 	/*****************************************/
+	
+	public Integer getRare() {
+		return rare;
+	}
+	
+	public void setRare(Integer rare) {
+		this.rare = rare;
+	}
 	
 	public Long getUpdateTime() {
 		return updateTime;

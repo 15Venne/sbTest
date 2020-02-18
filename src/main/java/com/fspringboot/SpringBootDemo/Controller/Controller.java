@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+
+import com.fspringboot.SpringBootDemo.entity.Card;
+import com.fspringboot.SpringBootDemo.entity.Pool;
 import com.fspringboot.SpringBootDemo.entity.User;
 
 @RestController
@@ -54,7 +57,7 @@ public class Controller{
 		
 		Query query = new Query();
 		query.addCriteria(Criteria.where("name").is("15venne"));
-		if(mongotemplate.findOne(query, User.class) != null) {
+		if(this.mongotemplate.findOne(query, User.class) != null) {
 			User user = mongotemplate.findOne(query, User.class);
 			map.put("data",user);
 			
@@ -248,11 +251,153 @@ public class Controller{
 	
 	/*******************************user*****************************************************/
 	
-	/*******************************pool*****************************************************/
+	/*******************************card*****************************************************/
+	@RequestMapping("/cardList")
+	public JSONObject cardList(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int limit, @RequestParam(defaultValue = "0") int rare) {
+		
+		System.out.println(page);
+		System.out.println(limit);
+		
+		System.out.println("rare: " + rare);
+		Criteria criteria = new Criteria();
+		Query query = new Query(criteria);	
+		if(rare == 2) {
+			query.addCriteria(Criteria.where("rare").is(2));
+		}
+		
+		
+		query.skip((page - 1) * limit);
+		query.limit(limit); 
+		
+		List<Card> cards = this.mongotemplate.find(query, Card.class);
+		
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("resultCode", 1);
+		
+		map.put("data",cards);
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		System.out.println("card_List");
+		System.out.println(cards);
+		return object;
+	}
 	
-	/*******************************pool*****************************************************/
+	@RequestMapping("/updateCard")
+	public JSONObject updateCard(@RequestParam(defaultValue = "") String id, @RequestParam(defaultValue = "") String disc,
+								@RequestParam(defaultValue = "") String cardName,@RequestParam(defaultValue = "") int label,
+								@RequestParam(defaultValue = "") String pic,@RequestParam(defaultValue = "") int sex,
+								@RequestParam(defaultValue = "") int atk, @RequestParam(defaultValue = "") int def,
+								@RequestParam(defaultValue = "") String catagory1, @RequestParam(defaultValue = "") String catagory2,
+								@RequestParam(defaultValue = "") String catagory3, @RequestParam(defaultValue = "") String auth) {
+		
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		System.out.println("id: " + id);
+		System.out.println("label: " + label);
+		
+		if(id.equals("0")) {
+			//注册
+			//判断是否存在card
+			Query query = new Query();
+			query.addCriteria(Criteria.where("cardName").is(cardName));
+			if(mongotemplate.findOne(query, User.class) != null) {
+				map.put("resultCode", -1);
+				map.put("data", "已存在同名卡牌");
+				JSONObject object = (JSONObject) JSONObject.toJSON(map);
+				return object;
+			}
+			
+			Card card = new Card();
+			card.setCardName(cardName);
+			card.setDisc(disc);
+			card.setPic(pic);
+			card.setAtk(atk);
+			card.setDef(def);
+			card.setSex(sex);
+			card.setLabel(label);
+			card.setCreateTime(System.currentTimeMillis() / 1000);
+			card.setCatagory2(catagory2);
+			card.setCatagory1(catagory1);
+			card.setCatagory3(catagory3);
+			card.setAuth(auth);
+			card.setIsOpen(true);
+			card.setOwnCount(0);
+			card.setUpdateTime(System.currentTimeMillis() / 1000);
+			
+			mongotemplate.insert(card);
+		}else {
+			//修改
+			Update update = new Update();
+			update.set("cardName", cardName);
+			update.set("disc", disc);
+			update.set("pic", pic);
+			update.set("atk", atk);
+			update.set("def", def);
+			update.set("label", label);
+			update.set("sex", sex);
+			update.set("catagory1", catagory1);
+			update.set("catagory2", catagory2);
+			update.set("catagory3", catagory3);
+			update.set("updateTime", System.currentTimeMillis() / 1000);
+			
+			Query query = new Query();
+			query.addCriteria(Criteria.where("id").is(id));
+			if(mongotemplate.findOne(query, Card.class) == null) {
+				map.put("resultCode", -1);
+				HashMap<String, Object> mapFail = new HashMap<String, Object>();
+				mapFail.put("resultMsg","不存在card");
+				JSONObject objectFail = (JSONObject) JSONObject.toJSON(mapFail);
+				map.put("data", objectFail);
+				JSONObject object = (JSONObject) JSONObject.toJSON(map);
+				return object;
+			}
+			mongotemplate.findAndModify(query, update, Card.class);
+		}
+		
+		
+		map.put("resultCode", 1);
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		System.out.println("updateCard");
+		return object;
+	}
+	
+	@RequestMapping("/getUpdateCard")
+	public JSONObject getUpdateCard(@RequestParam(defaultValue = "") String id) {
+		
+		System.out.println(id);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("resultCode", 1);
+		
+		
+		Query query = new Query();
+		query.addCriteria(Criteria.where("id").is(id));
+		if(mongotemplate.findOne(query, Card.class) != null) {
+			Card card = mongotemplate.findOne(query, Card.class);
+			map.put("data",card);
+			
+			String cardName = mongotemplate.findOne(query, Card.class).getCardName();
+			System.out.println("name: " + cardName);
+		}else {
+			map.put("data","");
+		}
+		
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		return object;
+	}
+	
+	@RequestMapping("/deleteCard")
+	public JSONObject deleteCard() {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("resultCode", 1);
+		
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		System.out.println("user_deleteUser");
+		return object;
+	}
+	
 	
 	/*******************************card*****************************************************/
 	
-	/*******************************card*****************************************************/
+	/*******************************pool*****************************************************/
+	
+	/*******************************pool*****************************************************/
 }

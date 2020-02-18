@@ -13,11 +13,19 @@
 		<input id="pageCount" type="" name="" style="display: none"/>
 		<div id="cardList" class="layui-col-md10">
 			<div class="card_btn_div" style="margin-top: 2%">
-				<input type="text" name="" class="layui-input nickName" style="width: 15%;display: inline" placeholder="用户昵称"/>
+				<input type="text" name="" class="layui-input cardName" style="width: 15%;display: inline" placeholder="卡牌名称"/>
 				<form class="layui-form" action="" style="float: left">				
 				</form>
 				<button class="layui-btn search_card">搜索</button>
-				<button onclick="Card.addCard()" class="layui-btn btn_addCard">新增卡</button>		
+				<button onclick="Card.addCard()" class="layui-btn btn_addCard">新增卡</button>
+				<select id="rare" class="layui-btn search_card1" style="line-height:38px; margin-left:10px">
+						<option selected="selected" value="">稀有度</option>
+						<option value="0">显示全部</option>
+						<option value="1">N</option>
+						<option value="2">R</option>
+						<option value="3">SR</option>
+						<option value="4">SSR</option>
+				</select>		
 		
 			</div>
 
@@ -119,7 +127,7 @@
 						<td>
 							<form class="layui-form" action="" style="">
 								<div class="layui-form-item">
-									<select id="catagory1" class="layui-select" style="width: 100%">
+									<select id="catagory2" class="layui-select" style="width: 100%">
 										<option selected="selected" value="">无</option>
 										<option value="0">无</option>
 									</select>
@@ -133,7 +141,7 @@
 						<td>
 							<form class="layui-form" action="" style="">
 								<div class="layui-form-item">
-									<select id="catagory1" class="layui-select" style="width: 100%">
+									<select id="catagory3" class="layui-select" style="width: 100%">
 										<option selected="selected" value="">无</option>
 										<option value="0">无</option>
 									</select>

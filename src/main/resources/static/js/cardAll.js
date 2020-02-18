@@ -28,18 +28,20 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
       ,curr: 0
       ,limit:Common.limit
       ,limits:Common.limits
-      ,groups: 7
+      ,groups: 7,
+      style:''
       ,cols: [[ //表头
            {type:'checkbox',fixed:'left'}// 多选
           ,{field: 'id', title: '卡牌id',sort:'true', width:100}
+          ,{field: 'pic', title: '卡面',sort:'true', width:100, templet:'<div><img src="{{ d.pic}}" id="imgs" ;"></div>', style:'width:auto;height:auto;'}
           ,{field: 'cardName', title: '名称',sort:'true', width:145}
           ,{field: 'atk', title: 'ATK',sort:'true', width:100}
-          ,{field: 'def', title: 'DEF',sort:'true', width:135}
+          ,{field: 'def', title: 'DEF',sort:'true', width:100}
           ,{field: 'disc', title: '描述',sort:'true', width:100}
           ,{field: 'label', title: 'label',sort:'true', width:100}
           ,{field: 'catagory1', title: '分类1',sort:'true', width:100}
           ,{field: 'catagory2', title: '分类2',sort:'true', width:100}
-          ,{field: 'catagory2', title: '分类3',sort:'true', width:100}
+          ,{field: 'catagory3', title: '分类3',sort:'true', width:100}
          // ,{field: 'registerTime', title: '注册时间',sort:'true', width:170}
          // ,{field: 'createTime', title: '注册时间',sort:'true', width:170,templet: function(d){
          // 		return UI.getLocalTime(d.createTime);
@@ -51,7 +53,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
           ,{field: 'auth', title: '作者',sort:'true', width:100}
 
           
-          ,{fixed: 'right', width: 200,title:"操作", align:'left', toolbar: '#userListBar'}
+          ,{fixed: 'right', width: 200,title:"操作", align:'left', toolbar: '#cardListBar'}
         ]]
 		  ,done:function(res, curr, count){
                if(count==0&&lock==1){
@@ -107,11 +109,51 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
         $(".cardName").val('');
         
     });
+    
+  //按rare搜索card
+    $(".search_card1").on("click",function(){
+        // 关闭超出宽度的弹窗
+        $(".layui-layer-content").remove();
+
+        table.reload("card_list",{
+            page: {
+                curr: 1 //重新从第 1 页开始
+            },
+            where: {
+                rare:$("#rare").val(),// 在线状态
+                
+            }
+        })
+        lock=1;
+        $(".cardName").val('');
+        
+    });
 
 
 })
 
 	 //layui END
+
+function adapt(){
+  var tableWidth = $("#imgTable").width(); //表格宽度
+  var tableHeight = $("#imgTable").height(); //表格高度
+  var img = new Image();
+  img.src =$('#imgs').attr("src") ;
+  var imgWidth = img.width; //图片实际宽度
+  var imgHeight = img.height;//图片实际高度
+  //if(imgWidth<tableWidth){
+	//  $('#imgs').attr("style","width: auto");
+  //}else{
+	//  $('#imgs').attr("style","width: 100%");
+  //}
+  
+  if(imgHeight<tableHeight){
+	  $('#imgs').attr("style","height: auto");
+  }else{
+	  $('#imgs').attr("style","height: 100%");
+  }
+
+}
 
 
 //重新渲染表单
@@ -183,11 +225,13 @@ var Card={
 	},
 
 
+	
+	
 	//  新增卡牌
 	addCard:function(){
         $(".password").show();
-		$("#userList").hide();
-		$("#addUser").show();
+		$("#cardList").hide();
+		$("#addCard").show();
 		
          $("#id").val("0");
         $("#cardName").val("");
@@ -260,7 +304,7 @@ var Card={
 				pic:$("#pic").val(),
 				atk:$("#atk").val(),
 				def:$("#def").val(),
-				label:$("#label").val(),
+				label:Number($("#label").val()),
 				catagory1:$("#catagory1").val(),
 				catagory2:$("#catagory2").val(),
 				catagory3:$("#catagory3").val(),
@@ -275,7 +319,7 @@ var Card={
 						layer.alert("添加成功");
                         $("#cardList").show();
                         $("#addCard").hide();
-                        layui.table.reload("user_list",{
+                        layui.table.reload("card_list",{
                             page: {
                                 curr: 1 //重新从第 1 页开始
                             },
@@ -357,7 +401,7 @@ var Card={
     checkDeleteCardsImpl:function(id,checkLength){
         layer.confirm('确定删除指定卡牌',{icon:3, title:'提示消息',yes:function () {
                 myFn.invoke({
-                    url:request('/console/deleteCard'),
+                    url:request('/venne/deleteCard'),
                     data:{
                         id:id
                     },
@@ -386,7 +430,7 @@ var Card={
   		$("#cardList").show();
   		$("#card_table").show();
       $(".card_btn_div").show();
-  		$("#autoCreateCard").hide();
+  		
   		
   		$("#addCard").hide();
       
