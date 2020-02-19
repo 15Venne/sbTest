@@ -4,8 +4,13 @@
 <meta charset="UTF-8">
 <title>卡牌管理</title>
 <link href="/css/layui.css" rel="stylesheet" media="all" />
+
+
 </head>
 
+<style type="text/css">
+    #divImage{width: 200px;height: 200px;  position: absolute; pointer-events: none;}
+</style>
 
 <body>
 	<div class="layui-row">
@@ -18,7 +23,7 @@
 				</form>
 				<button class="layui-btn search_card">搜索</button>
 				<button onclick="Card.addCard()" class="layui-btn btn_addCard">新增卡</button>
-				<select id="rare" class="layui-btn search_card1" style="line-height:38px; margin-left:10px">
+				<select id="rare1" class="layui-btn search_card1" style="line-height:38px; margin-left:10px">
 						<option selected="selected" value="">稀有度</option>
 						<option value="0">显示全部</option>
 						<option value="1">N</option>
@@ -91,7 +96,24 @@
 					<tr>
 						<td>图片地址</td>
 						<td><input id="pic" type="" name="" class="layui-input" ></td>
-					</tr>				
+					</tr>	
+					
+					<tr>
+						<td>稀有度</td>
+						<td>
+							<form class="layui-form" action="" style="">
+								<div class="layui-form-item">
+									<select id="rare" class="layui-select" style="width: 100%">
+										<option selected="selected" value="">请选择</option>
+										<option value="1">N</option>
+										<option value="2">R</option>
+										<option value="3">SR</option>
+										<option value="4">SSR</option>
+									</select>
+								</div>
+							</form>
+						</td>
+					</tr>			
 					
 					<tr>
 						<td>ATK</td>
@@ -184,6 +206,26 @@
 
 
 	</div>
+	
+
+
+
+<div id="divImage" >
+        <img id="imgbig" src="" alt="预览" />
+</div>
+
+
+<script type="text/javascript">
+    document.onmousemove=function(ev){
+        var oEvent=ev||event;
+        var oDiv=document.getElementById('divImage');
+        var scrollTop=document.documentElement.scrollTop||document.body.scrollTop;
+        var scrollLeft=document.documentElement.scrollLeft||document.body.scrollLeft;
+        oDiv.style.left=oEvent.clientX+scrollLeft+'px';
+        oDiv.style.top=oEvent.clientY+scrollTop+'px';
+
+    }
+</script>
 
 
 <script type="text/javascript" src="/js/jquery.min.js"></script>

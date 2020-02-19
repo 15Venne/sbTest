@@ -7,6 +7,9 @@ var id;
 
 var currentPageIndex;// 当前页码数
 var currentCount;// 当前总数
+
+document.getElementById("divImage").style.display = "none";
+
 layui.use(['form','layer','laydate','table','laytpl'],function(){
     var form = layui.form,
         layer = parent.layer === undefined ? layui.layer : top.layer,
@@ -33,10 +36,23 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
       ,cols: [[ //表头
            {type:'checkbox',fixed:'left'}// 多选
           ,{field: 'id', title: '卡牌id',sort:'true', width:100}
-          ,{field: 'pic', title: '卡面',sort:'true', width:100, templet:'<div><img src="{{ d.pic}}" id="imgs" ;"></div>', style:'width:auto;height:auto;'}
+          ,{field: 'pic', title: '卡面',sort:'true', width:70, templet:'<div ><img src="{{d.pic}}" id="{{d.id}}"  onmouseover="over(id,divImage,imgbig)" onmouseout="out()"  alt="" style="max-width:100%;height:auto;"></div>'}
           ,{field: 'cardName', title: '名称',sort:'true', width:145}
           ,{field: 'atk', title: 'ATK',sort:'true', width:100}
           ,{field: 'def', title: 'DEF',sort:'true', width:100}
+          ,{field: 'rare', title: '稀有度',sort:'true', width:100,templet: function(d){
+        		if(d.rare == 1){
+        			return "N";
+        		}else if(d.rare == 2){
+        			return "R";
+        		}else if(d.rare == 3){
+        			return "SR";
+        		}else if(d.rare == 4){
+        			return "SSR";
+        		}else{
+        			return "unknow";
+        		}
+        }}
           ,{field: 'disc', title: '描述',sort:'true', width:100}
           ,{field: 'label', title: 'label',sort:'true', width:100}
           ,{field: 'catagory1', title: '分类1',sort:'true', width:100}
@@ -46,7 +62,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
          // ,{field: 'createTime', title: '注册时间',sort:'true', width:170,templet: function(d){
          // 		return UI.getLocalTime(d.createTime);
          // }}
-          ,{field: 'sex', title: '性别',sort:'true', width:105,templet: function(d){
+          ,{field: 'sex', title: '性别',sort:'true', width:100,templet: function(d){
           		return (d.sex==0?"女":"男");
           }}
 
@@ -120,7 +136,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                 curr: 1 //重新从第 1 页开始
             },
             where: {
-                rare:$("#rare").val(),// 在线状态
+                rare:$("#rare1").val(),// 稀有度搜索
                 
             }
         })
@@ -134,24 +150,62 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
 
 	 //layui END
 
-function adapt(){
+
+
+function over(imgid,obj,imgbig){
+	var imgsrc = document.getElementById(imgid);
+	//console.log(imgsrc.src);
+	
+	maxwidth=400;
+	maxheight=300;
+	//console.log(obj.style.display);
+	//obj.style.display=" ";
+	document.getElementById('divImage').style.display="";
+	//console.log(obj.style.display);
+    imgbig.src=imgsrc.src;
+    
+   //console.log(imgbig.src);
+        
+    //if(imgs.width>maxwidth&&imgs.height>maxheight)
+    //{
+    //    pare=(imgs.width-maxwidth)-(imgs.height-maxheight);
+    //    if(pare>=0)
+    //        imgs.width=maxwidth;
+    //    else
+    //        imgs.height=maxheight;
+   // }else if(imgs.width>maxwidth&&imgs.height<=maxheight)
+    //{
+    //    imgs.width=maxwidth;
+    //}else if(imgs.width<=maxwidth&&imgs.height>maxheight)
+    //{
+    //    imgs.height=maxheight;
+    //}
+    
+}
+
+function out()
+{
+	document.getElementById('divImage').style.display="none";
+}
+
+function adapt(imgid){
   var tableWidth = $("#imgTable").width(); //表格宽度
   var tableHeight = $("#imgTable").height(); //表格高度
   var img = new Image();
-  img.src =$('#imgs').attr("src") ;
+  img.src =$(imgid).attr("src") ;
   var imgWidth = img.width; //图片实际宽度
   var imgHeight = img.height;//图片实际高度
-  //if(imgWidth<tableWidth){
-	//  $('#imgs').attr("style","width: auto");
-  //}else{
-	//  $('#imgs').attr("style","width: 100%");
-  //}
-  
-  if(imgHeight<tableHeight){
-	  $('#imgs').attr("style","height: auto");
+  if(imgWidth<tableWidth){
+	  $(imgid).attr("style","width: auto");
   }else{
-	  $('#imgs').attr("style","height: 100%");
+	  $(imgid).attr("style","width: 100%");
   }
+  
+  //if(imgHeight<tableHeight){
+//	  $('#imgs').attr("style","height: auto");
+  //}else{
+	//  $('#imgs').attr("style","height: 100%");
+  //}
 
 }
 
@@ -236,6 +290,7 @@ var Card={
          $("#id").val("0");
         $("#cardName").val("");
         $("#disc").val("");
+        $("#rare").val("");
         $("#pic").val("");
         $("#sex").val("");
         $("#atk").val("");
@@ -271,6 +326,11 @@ var Card={
 		
 		if($("#sex").val()==""){
             layui.layer.alert("请选择性别");
+            return;
+        }
+		console.log($("#rare").val());
+		if($("#rare").val()==""){
+            layui.layer.alert("请选择稀有度");
             return;
         }
         
@@ -309,6 +369,7 @@ var Card={
 				catagory2:$("#catagory2").val(),
 				catagory3:$("#catagory3").val(),
 				sex:$("#sex").val(),
+				rare:$("#rare").val(),
 				auth:$("#auth").val()		       
 			},
 			dataType:'json',
@@ -369,6 +430,7 @@ var Card={
 					$('#catagory2').val(result.data.catagory2);
 					$('#catagory3').val(result.data.catagory3);
 					$('#auth').val(result.data.auth);
+					$('#rare').val(result.data.rare);
 				}
 				$("#addCardTitle").empty();
 				$("#addCardTitle").append("修改卡牌");
@@ -438,3 +500,4 @@ var Card={
  
 
 }
+

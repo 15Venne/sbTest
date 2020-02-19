@@ -262,8 +262,8 @@ public class Controller{
 		System.out.println("rare: " + rare);
 		Criteria criteria = new Criteria();
 		Query query = new Query(criteria);	
-		if(rare == 2) {
-			query.addCriteria(Criteria.where("rare").is(2));
+		if(rare != 0) {
+			query.addCriteria(Criteria.where("rare").is(rare));
 		}
 		
 		
@@ -288,7 +288,8 @@ public class Controller{
 								@RequestParam(defaultValue = "") String pic,@RequestParam(defaultValue = "") int sex,
 								@RequestParam(defaultValue = "") int atk, @RequestParam(defaultValue = "") int def,
 								@RequestParam(defaultValue = "") String catagory1, @RequestParam(defaultValue = "") String catagory2,
-								@RequestParam(defaultValue = "") String catagory3, @RequestParam(defaultValue = "") String auth) {
+								@RequestParam(defaultValue = "") String catagory3, @RequestParam(defaultValue = "") String auth,
+								@RequestParam(defaultValue = "") int rare) {
 		
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		System.out.println("id: " + id);
@@ -310,6 +311,7 @@ public class Controller{
 			card.setCardName(cardName);
 			card.setDisc(disc);
 			card.setPic(pic);
+			card.setRare(rare);
 			card.setAtk(atk);
 			card.setDef(def);
 			card.setSex(sex);
@@ -332,6 +334,7 @@ public class Controller{
 			update.set("pic", pic);
 			update.set("atk", atk);
 			update.set("def", def);
+			update.set("rare", rare);
 			update.set("label", label);
 			update.set("sex", sex);
 			update.set("catagory1", catagory1);
@@ -390,7 +393,7 @@ public class Controller{
 		map.put("resultCode", 1);
 		
 		JSONObject object = (JSONObject) JSONObject.toJSON(map);
-		System.out.println("user_deleteUser");
+		System.out.println("card_deleteCard");
 		return object;
 	}
 	

@@ -138,7 +138,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
         })
         lock=1;
         $(".nickName").val('');
-        $("#myFriends").hide();
+        
     });
 
 
@@ -165,8 +165,6 @@ function renderTable(){
  }
 
 
-var loginTime="";
-var offlineTime="";
 
 var User={
 	user_list:function(e,pageSize){
@@ -352,9 +350,7 @@ var User={
         checkDeleteUsers:function(){
             // 多选操作
             var checkStatus = layui.table.checkStatus('user_list'); //idTest 即为基础参数 id 对应的值
-            console.log("新版："+checkStatus.data) //获取选中行的数据
-            console.log("新版："+checkStatus.data.length) //获取选中行数量，可作为是否有选中行的条件
-            console.log("新版："+checkStatus.isAll ) //表格是否全选
+            
 		for (var i = 0; i < checkStatus.data.length; i++){
 			userIds.push(checkStatus.data[i].userId);
 		}
@@ -388,93 +384,6 @@ var User={
                 userIds = [];
             }});
     },
-
-    // 多选删除用户好友
-    checkDeleteUsersFriends:function(){
-        // 多选操作
-        var checkStatus = layui.table.checkStatus('myFriends_table'); //idTest 即为基础参数 id 对应的值
-        console.log("新版："+checkStatus.data) //获取选中行的数据
-        console.log("新版："+checkStatus.data.length) //获取选中行数量，可作为是否有选中行的条件
-        console.log("新版："+checkStatus.isAll ) //表格是否全选
-        var userId;
-		for (var i = 0; i < checkStatus.data.length; i++){
-            toUserIds.push(checkStatus.data[i].toUserId);
-        	userId = checkStatus.data[i].userId;
-		}
-        console.log("userId: "+userId+"------"+toUserIds);
-        if(0 == checkStatus.data.length){
-            layer.msg("请勾选要删除的行");
-            return;
-        }
-        User.checkDeleteUsersFriendsImpl(userId,toUserIds.join(","),checkStatus.data.length);
-    },
-    checkDeleteUsersFriendsImpl:function(userId,toUserId,checkLength){
-        layer.confirm('确定删除指定好友',{icon:3, title:'提示消息',yes:function () {
-                myFn.invoke({
-                    url:request('/console/deleteFriends'),
-                    data:{
-                        userId:userId,
-                        toUserIds:toUserId
-                    },
-                    success:function(result){
-                        if(result.resultCode==1){
-                            layer.msg("删除成功",{"icon":1});
-                            toUserIds = [];
-                            // layui.table.reload("myFriends_table");
-                            Common.tableReload(currentCount,currentPageIndex,checkLength,"myFriends_table");
-                        }
-                    }
-                })
-            },btn2:function () {
-                toUserIds = [];
-            },cancel:function () {
-                toUserIds = [];
-            }});
-	},
-
-	
-
-
-	// 多选删除聊天记录
-    toolbarUsersChatRecord:function(){
-        // 多选操作
-        var checkStatus = layui.table.checkStatus('friendsChatRecord_table'); //idTest 即为基础参数 id 对应的值
-        console.log("新版："+checkStatus.data) //获取选中行的数据
-        console.log("新版："+checkStatus.data.length) //获取选中行数量，可作为是否有选中行的条件
-        console.log("新版："+checkStatus.isAll ) //表格是否全选
-        for (var i = 0; i < checkStatus.data.length; i++){
-            messageIds.push(checkStatus.data[i].messageId);
-        }
-        console.log(messageIds);
-        if(0 == checkStatus.data.length){
-            layer.msg("请勾选要删除的行");
-            return;
-        }
-        User.toolbarUsersChatRecordImpl(messageIds.join(","),checkStatus.data.length);
-	},
-    toolbarUsersChatRecordImpl:function(messageId,checkLength){
-        layer.confirm('确定删除指定聊天记录',{icon:3, title:'提示消息',yes:function () {
-                myFn.invoke({
-                    url:request('/console/delFriendsChatRecord'),
-                    data:{
-                        messageId :messageId
-                    },
-                    success:function(result){
-                        if(result.resultCode==1){
-                            layer.msg("删除成功",{"icon":1});
-                            messageIds = [];
-                            Common.tableReload(currentCount,currentPageIndex,checkLength,"friendsChatRecord_table");
-
-                            // layui.table.reload("friendsChatRecord_table");
-                        }
-                    }
-                })
-            },btn2:function () {
-                messageIds = [];
-            },cancel:function () {
-                messageIds = [];
-      }});
-	},
 
 	// 重置密码
 	ResetPassword:function(userId){
@@ -532,51 +441,8 @@ var User={
         // });
 	},
 	
-	
-	
-	
-	// 提交
-	commit_exportUser:function(){
-		myFn.invoke({
-			url:request('/console/exportData'),
-			data:{
-				userType:$("#userType").val()
-			},
-			success:function(result){
-				if(result.resultCode==1){
-					layer.alert("导出成功");
-				}
-			}
-		})
-	},
 
-    
-
-    // 加入移除黑名单
-    joinMoveBlacklist:function(userId,toUserId,status){
-		console.log("进入面板"+toUserId);
-        var confMsg,successMsg="";
-        (status == 0 ? confMsg = '确定加入黑名单？':confMsg = '确定移除黑名单？');
-        (status == 0 ? successMsg = "加入成功":successMsg ="移除成功");
-        layer.confirm(confMsg,{icon:3, title:'提示信息'},function(index){
-
-            Common.invoke({
-                path : request('/console/blacklist/operation'),
-                data : {
-                	userId:userId,
-                    toUserId:toUserId,
-					type:status
-                },
-                successMsg : successMsg,
-                errorMsg :  "加载数据失败，请稍后重试",
-                successCb : function(result) {
-                    layui.table.reload("myFriends_table")
-                },
-                errorCb : function(result) {
-                }
-            });
-        })
-    },
+   
     button_back:function(){
 
   		$("#userList").show();
@@ -587,11 +453,7 @@ var User={
   		$("#addUser").hide();
       $("#myFriends").hide();
       $("#myInviteCode").hide();
-	},
-  // 好友聊天记录的返回按钮
-  button_back_chatRecord:function(){
-        $("#myFriends").show();
-        $("#friendsChatRecord").hide();
 	}
+ 
 
 }
