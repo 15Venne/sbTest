@@ -27,12 +27,79 @@ public class Pool{
 			
 	/*卡池类型
 	 * 1，卡组池，cardMap是卡池-概率
-	 * 2，
-	 * 3，
-	 * 4，
-	 * 5，
+	 * 2，N池
+	 * 3，R池
+	 * 4，SR池
+	 * 5，SSR池
 	*/
 	private Integer type;
+	
+	
+	
+	//卡牌/卡池
+	//概率：1~1000
+	private Map<String, Integer> cardMap;
+	
+	private Integer maxCnt = 1000;
+	
+	//卡数/卡组数，修改cardMap后修改
+	private Integer cnt = 0;
+	
+	//必须通过修改cardMap设置
+	private Integer ratessr;
+	private Integer ratesr;
+	private Integer rater;
+	private Integer raten;
+	
+	private Integer ratered;
+	private Integer rateblue;
+	private Integer rategreen;
+	
+	/***************************************/
+	
+	public Integer getRategreen() {
+		return rategreen;
+	}
+	public void setRategreen(Integer rategreen) {
+		this.rategreen = rategreen;
+	}
+	public Integer getRateblue() {
+		return rateblue;
+	}
+	public void setRateblue(Integer rateblue) {
+		this.rateblue = rateblue;
+	}
+	public Integer getRatered(){
+		return ratered;
+	}
+	public void setRatered(Integer ratered) {
+		this.ratered = ratered;
+	}
+	
+	public Integer getRaten() {
+		return raten;
+	}
+	public void setRaten(Integer raten) {
+		this.raten = raten;
+	}
+	public Integer getRater() {
+		return rater;
+	}
+	public void setRater(Integer rater) {
+		this.rater = rater;
+	}
+	public Integer getRatesr() {
+		return ratesr;
+	}
+	public void setRatesr(Integer ratesr) {
+		this.ratesr = ratesr;
+	}
+	public Integer getRatessr() {
+		return ratessr;
+	}
+	public void setRatessr(Integer ratessr) {
+		this.ratessr = ratessr;
+	}
 	
 	public Integer getType() {
 		return type;
@@ -41,16 +108,6 @@ public class Pool{
 	public void setType(Integer type) {
 		this.type = type;
 	}
-	
-	//卡牌/卡池
-	//概率：1~1000
-	private Map<String, Integer> cardMap;
-	
-	private Integer maxCnt = 1000;
-	
-	private Integer cnt = 0;
-	
-	/***************************************/
 	
 	public Map<String, Integer> getCardMap(){
 		return cardMap;

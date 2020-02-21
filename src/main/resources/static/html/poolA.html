@@ -1,13 +1,170 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/>
-<title>play</title>
-<link rel="icon" th:href="@{/images/favicon.ico}"/>
-</head>
-<body>
+<meta charset="UTF-8">
+<title>卡组池管理</title>
+<link href="/css/layui.css" rel="stylesheet" media="all" />
 
-<p>未完待续</p>
+
+</head>
+
+<style type="text/css">
+    #divImage{width: 200px;height: 200px;  position: absolute; pointer-events: none;}
+</style>
+
+<body>
+	<div class="layui-row">
+		<div class="layui-col-md1">&nbsp;</div>
+		<input id="pageCount" type="" name="" style="display: none"/>
+		<div id="poolList" class="layui-col-md10">
+			<div class="pool_btn_div" style="margin-top: 2%">
+				<input type="text" name="" class="layui-input poolName" style="width: 15%;display: inline" placeholder="卡牌名称"/>
+				<form class="layui-form" action="" style="float: left">				
+				</form>
+				<button class="layui-btn search_pool">搜索</button>
+				<button onclick="Pool.addPool()" class="layui-btn btn_addPool">新增卡池</button>
+				
+				
+				<select id="rare1" class="layui-btn search_pool1" style="line-height:38px; margin-left:10px">
+						<option selected="selected" value="">选择类型</option>
+						<option value="1">卡组池</option>
+						<option value="2">N池</option>
+						<option value="3">R池</option>
+						<option value="4">SR池</option>
+						<option value="5">SSR池</option>
+				</select>	
+				
+					
+		
+			</div>
+
+			<div id="pool_table" class="layui-pool" style="margin-top: 1%">
+				<div class="layui-pool-header"><p>卡池列表</p></div>
+				<div class="layui-pool-body">
+					<table id="pool_list" lay-filter="pool_list" style="table-layout:fixed;word-break:break-all;" >
+						
+					</table>
+				</div>
+			</div>
+		
+
+			<!-- 多选操作 -->
+			<script type="text/html" id="toolbarPools">
+				<div class="layui-btn-container">
+					<button id="checkDeletePoolsId" class="layui-btn layui-btn-sm checkDeletePools" onclick="Pool.checkDeletePools()" lay-event="delete">多选删除</button>
+				</div>
+			</script>
+
+			<!--操作-->
+			<script type="text/html" id="poolListBar">
+				{{#  if(d.poolId < 10100){ }}
+				<a class="layui-btn layui-btn-disabled layui-btn-xs delete" lay-event="delete">删除</a>
+				{{#  }else{  }}
+				<a class="layui-btn layui-btn-danger layui-btn-xs delete" lay-event="delete">删除</a>
+				{{#  } }}
+				{{#  if(d.poolId < 10100){ }}
+				<a class="layui-btn layui-btn-disabled layui-btn-xs update" lay-event="update">修改</a>
+				{{#  }else{  }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs update" lay-event="update">修改</a>
+				{{#  } }}
+
+				<a class="layui-btn layui-btn-primary layui-btn-xs updateMap" lay-event="updateMap">修改</a>
+													
+			</script>		
+
+				
+
+		</div>
+
+		<!-- 添加用户 -->
+		<div id="addPool" class="layui-col-md10" style="display: none">
+			<div id="addPoolTitle" class="layui-pool-header">新增卡池</div>
+			<table class="layui-table">
+				<thead>
+					<tr>
+						<td width="20%">卡池参数</td>
+						<td>卡池信息</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>名称</td>
+						<td><input id="id" type="" name="" style="display: none"><input id="poolName" type="" name="" class="layui-input"></td>
+					</tr>
+				
+					
+					
+					<tr>
+						<td>图片地址</td>
+						<td><input id="pic" type="" name="" class="layui-input" ></td>
+					</tr>	
+					
+					<tr>
+						<td>类型</td>
+						<td>
+							<form class="layui-form" action="" style="">
+								<div class="layui-form-item">
+									<select id="type" class="layui-select" style="width: 100%">
+										<option selected="selected" value="">请选择</option>
+										<option value="1">卡组池</option>
+										<option value="2">N池</option>
+										<option value="3">R池</option>
+										<option value="4">SR池</option>
+										<option value="5">SSR池</option>
+									</select>
+								</div>
+							</form>
+						</td>
+					</tr>			
+					
+					<tr>
+						<td>最大数量</td>
+						<td><input id="maxCnt" type="" name="" class="layui-input"></td>
+					</tr>				
+				</tbody>
+			</table>
+			
+			<div style="display: inline;">
+				<button onclick="Pool.commit_addPool()" class="layui-btn">提交</button>
+				<button onclick="Pool.button_back()" class="layui-btn layui-btn-primary layui-btn-sm" style="">&lt;&lt;返回</button>
+			</div>
+		</div>
+
+
+	</div>
+	
+
+
+
+<div id="divImage" >
+        <img id="imgbig" src="" alt="预览" />
+</div>
+
+
+<script type="text/javascript">
+    document.onmousemove=function(ev){
+        var oEvent=ev||event;
+        var oDiv=document.getElementById('divImage');
+        var scrollTop=document.documentElement.scrollTop||document.body.scrollTop;
+        var scrollLeft=document.documentElement.scrollLeft||document.body.scrollLeft;
+        oDiv.style.left=oEvent.clientX+scrollLeft+'px';
+        oDiv.style.top=oEvent.clientY+scrollTop+'px';
+
+    }
+</script>
+
+
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/layui.all.js"></script>
+<script type="text/javascript" src="/js/jquery.md5.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/js/console_ui.js"></script>
+<script type="text/javascript" src="/js/_coolchat-commons.js"></script>
+<script type="text/javascript" src="/js/core.js"></script>
+<script type="text/javascript" src="/js/tripledes.js"></script>
+<script type="text/javascript" src="/js/poolA.js"></script>
+<!-- <script type="text/javascript" src="/pages/js/console_init.js"></script> -->
+
 
 
 </body>

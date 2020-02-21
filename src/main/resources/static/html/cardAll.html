@@ -23,6 +23,8 @@
 				</form>
 				<button class="layui-btn search_card">搜索</button>
 				<button onclick="Card.addCard()" class="layui-btn btn_addCard">新增卡</button>
+				
+				
 				<select id="rare1" class="layui-btn search_card1" style="line-height:38px; margin-left:10px">
 						<option selected="selected" value="">稀有度</option>
 						<option value="0">显示全部</option>
@@ -30,7 +32,18 @@
 						<option value="2">R</option>
 						<option value="3">SR</option>
 						<option value="4">SSR</option>
-				</select>		
+				</select>	
+				
+				<select id="catagory1S" class="layui-btn search_cardC1" style="line-height:38px; margin-left:10px">
+						<option selected="selected" value="lazy">系列</option>
+						<option value="lazy">显示全部</option>
+						<option value="Red">Red</option>
+						<option value="Blue">Blue</option>
+						<option value="Green">Green</option>
+						
+				</select>
+				
+					
 		
 			</div>
 
@@ -66,9 +79,7 @@
 													
 			</script>		
 
-			<script type="text/html" id="delChartRecord">
-                <a class="layui-btn layui-btn-danger layui-btn-xs deletechatRecord" lay-event="deletechatRecord">删除</a>
-			</script>		
+				
 
 		</div>
 
@@ -131,16 +142,9 @@
 					</tr>
 					
 					<tr>
-						<td>类别1</td>
+						<td>系列</td>
 						<td>
-							<form class="layui-form" action="" style="">
-								<div class="layui-form-item">
-									<select id="catagory1" class="layui-select" style="width: 100%">
-										<option selected="selected" value="">无</option>
-										<option value="0">无</option>
-									</select>
-								</div>
-							</form>
+							<input id="catagory1" type="" name="" class="layui-input" >
 						</td>
 					</tr>
 					

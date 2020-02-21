@@ -254,7 +254,9 @@ public class Controller{
 	/*******************************card*****************************************************/
 	@RequestMapping("/cardList")
 	public JSONObject cardList(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int limit, @RequestParam(defaultValue = "0") int rare) {
+			@RequestParam(defaultValue = "10") int limit, @RequestParam(defaultValue = "0") int rare,
+			@RequestParam(defaultValue = "lazy") String catagory1, @RequestParam(defaultValue = "lazy") String catagory2,
+			@RequestParam(defaultValue = "lazy") String catagory3) {
 		
 		System.out.println(page);
 		System.out.println(limit);
@@ -265,7 +267,15 @@ public class Controller{
 		if(rare != 0) {
 			query.addCriteria(Criteria.where("rare").is(rare));
 		}
-		
+		if(!catagory1.equals("lazy")) {
+			query.addCriteria(Criteria.where("catagory1").is(catagory1));
+		}
+		if(!catagory2.equals("lazy")) {
+			query.addCriteria(Criteria.where("catagory2").is(catagory2));
+		}
+		if(!catagory3.equals("lazy")) {
+			query.addCriteria(Criteria.where("catagory3").is(catagory3));
+		}
 		
 		query.skip((page - 1) * limit);
 		query.limit(limit); 

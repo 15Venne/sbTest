@@ -1,8 +1,8 @@
 var page=0;
 var lock=0;
-var cardIds = new Array();
+var poolIds = new Array();
 
-var cardName;
+var poolName;
 var id;
 
 var currentPageIndex;// 当前页码数
@@ -21,12 +21,12 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
     
     //console.log("userList_bigin");
 
-	  //卡牌列表
-    var tableInCard = table.render({
-      elem: '#card_list'
-      ,toolbar: '#toolbarCards'
-      ,url:request("/venne/cardList")
-      ,id: 'card_list'
+	  //卡池列表
+    var tableInPool = table.render({
+      elem: '#pool_list'
+      ,toolbar: '#toolbarPools'
+      ,url:request("/venne/poolList")
+      ,id: 'pool_list'
       ,page: true
       ,curr: 0
       ,limit:Common.limit
@@ -35,41 +35,30 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
       style:''
       ,cols: [[ //表头
            {type:'checkbox',fixed:'left'}// 多选
-          ,{field: 'id', title: '卡牌id',sort:'true', width:100}
-          ,{field: 'pic', title: '卡面',sort:'true', width:70, templet:'<div ><img src="{{d.pic}}" id="{{d.id}}"  onmouseover="over(id,divImage,imgbig)" onmouseout="out()"  alt="" style="max-width:100%;height:auto;"></div>'}
-          ,{field: 'cardName', title: '名称',sort:'true', width:145}
-          ,{field: 'atk', title: 'ATK',sort:'true', width:100}
-          ,{field: 'def', title: 'DEF',sort:'true', width:100}
-          ,{field: 'rare', title: '稀有度',sort:'true', width:100,templet: function(d){
-        		if(d.rare == 1){
-        			return "N";
-        		}else if(d.rare == 2){
-        			return "R";
-        		}else if(d.rare == 3){
-        			return "SR";
-        		}else if(d.rare == 4){
-        			return "SSR";
-        		}else{
-        			return "unknow";
-        		}
-        }}
-          ,{field: 'disc', title: '描述',sort:'true', width:100}
-          ,{field: 'label', title: 'label',sort:'true', width:100}
-          ,{field: 'catagory1', title: '分类1',sort:'true', width:100}
-          ,{field: 'catagory2', title: '分类2',sort:'true', width:100}
-          ,{field: 'catagory3', title: '分类3',sort:'true', width:100}
-         // ,{field: 'registerTime', title: '注册时间',sort:'true', width:170}
-         // ,{field: 'createTime', title: '注册时间',sort:'true', width:170,templet: function(d){
-         // 		return UI.getLocalTime(d.createTime);
-         // }}
-          ,{field: 'sex', title: '性别',sort:'true', width:100,templet: function(d){
-          		return (d.sex==0?"女":"男");
+          ,{field: 'id', title: '卡池id',sort:'true', width:100}
+          ,{field: 'pic', title: '封面',sort:'true', width:70, templet:'<div ><img src="{{d.pic}}" id="{{d.id}}"  onmouseover="over(id,divImage,imgbig)" onmouseout="out()"  alt="" style="max-width:100%;height:auto;"></div>'}
+          ,{field: 'poolName', title: '名称',sort:'true', width:145}
+          ,{field: 'type', title: '类型',sort:'true', width:100,templet: function(d){
+      		if(d.type == 1){
+      			return "卡组池";
+      		}else if(d.type == 2){
+      			return "N池";
+      		}else if(d.type == 3){
+      			return "R池";
+      		}else if(d.type == 4){
+      			return "SR池";
+      		}else if(d.type == 5){
+      			return "SSR池";
+      		}else{
+      			return "unknow";
+      		}
           }}
-
-          ,{field: 'auth', title: '作者',sort:'true', width:100}
-
+          ,{field: 'cnt', title: '当前卡牌/池数量',sort:'true', width:100}
+          ,{field: 'maxCnt', title: '最大卡牌/池数量',sort:'true', width:100}
           
-          ,{fixed: 'right', width: 200,title:"操作", align:'left', toolbar: '#cardListBar'}
+          
+          
+          ,{fixed: 'right', width: 200,title:"操作", align:'left', toolbar: '#poolListBar'}
         ]]
 		  ,done:function(res, curr, count){
                if(count==0&&lock==1){
@@ -77,65 +66,65 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                  renderTable();
                }
                lock=0;
-                $("#cardList").show();
-                $("#card_table").show();
-                $("#addCard").hide();
+                $("#poolList").show();
+                $("#pool_table").show();
+                $("#addPool").hide();
                // $("#autoCreateUser").hide();
                 //$("#exportUser").hide();
                  
-                var pageIndex = tableInCard.config.page.curr;//获取当前页码
+                var pageIndex = tableInPool.config.page.curr;//获取当前页码
                 var resCount = res.count;// 获取table总条数
                 currentCount = resCount;
                 currentPageIndex = pageIndex;
 		  }
 
     });
-    $(".cardName").val('');
+    $(".poolName").val('');
 
   //列表操作
-  table.on('tool(card_list)', function(obj){
+  table.on('tool(pool_list)', function(obj){
       var layEvent = obj.event,
             data = obj.data;
              
       if(layEvent === 'delete'){ //删除  
              
-          Card.checkDeleteCardsImpl(data.id,1);
+          Pool.checkDeletePoolsImpl(data.id,1);
       }else if(layEvent === 'update'){// 修改卡牌
           
-          Card.updateCard(obj.data,obj.data.id);
+          Pool.updatePool(obj.data,obj.data.id);
       }
 
   });
 
     //搜索用户
-    $(".search_card").on("click",function(){
+    $(".search_pool").on("click",function(){
         // 关闭超出宽度的弹窗
         $(".layui-layer-content").remove();
 
-        table.reload("card_list",{
+        table.reload("pool_list",{
             page: {
                 curr: 1 //重新从第 1 页开始
             },
             where: {      
-                keyWorld : $(".cardName").val()  //搜索的关键字
+                keyWorld : $(".poolName").val()  //搜索的关键字
             }
         })
         lock=1;
-        $(".cardName").val('');
+        $(".poolName").val('');
         
     });
     
     var rare1pre = "";
     var catagory1pre="lazy";
-  //按rare筛选card
-    $(".search_card1").on("click",function(){
+  //按rare筛选pool
+    $(".search_pool1").on("click",function(){
         // 关闭超出宽度的弹窗
         $(".layui-layer-content").remove();
         if($("#rare1").val() == rare1pre){
         	return ;
         }
         rare1pre = $("#rare1").val();
-        table.reload("card_list",{
+        table.reload("pool_list",{
             page: {
                 curr: 1 //重新从第 1 页开始
             },
@@ -145,20 +134,20 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             }
         })
         lock=1;
-        $(".cardName").val('');
+        $(".poolName").val('');
         
     });
     
     
-  //按category1搜索card
-    $(".search_cardC1").on("click",function(){
+  //按category1搜索pool
+    $(".search_poolC1").on("click",function(){
         // 关闭超出宽度的弹窗
         $(".layui-layer-content").remove();
         if($("#catagory1S").val() == catagory1pre){
         	return ;
         }
         catagory1pre = $("#catagory1S").val();
-        table.reload("card_list",{
+        table.reload("pool_list",{
             page: {
                 curr: 1 //重新从第 1 页开始
             },
@@ -168,7 +157,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             }
         })
         lock=1;
-        $(".cardName").val('');
+        $(".poolName").val('');
         
     });
 
@@ -242,13 +231,13 @@ function renderTable(){
   layui.use('table', function(){
    var table = layui.table;//高版本建议把括号去掉，有的低版本，需要加()
    
-   table.reload("card_list",{
+   table.reload("pool_list",{
         page: {
             curr: 1 //重新从第 1 页开始
         },
         where: {
             onlinestate:$("#status").val(),// 在线状态
-            keyWorld : $(".cardName").val()  //搜索的关键字
+            keyWorld : $(".poolName").val()  //搜索的关键字
         }
     })
   });
@@ -256,8 +245,8 @@ function renderTable(){
 
 
 
-var Card={
-	card_list:function(e,pageSize){
+var Pool={
+	pool_list:function(e,pageSize){
 		var html="";
 		if(e==undefined){
 			e=0;
@@ -266,7 +255,7 @@ var Card={
 		}
 		$.ajax({
 			type:'POST',
-			url:request('/venne/cardList'),
+			url:request('/venne/poolList'),
 			data:{
 				pageIndex:(e==0?"0":e-1),
 				pageSize:pageSize
@@ -293,11 +282,11 @@ var Card={
 						html+="</tr>";
 					}
 
-					$("#cardList_table").empty();
-					$("#cardList_table").append(html);
-					$("#cardList").show();
-					$("#card_table").show();
-					$("#addCard").hide();
+					$("#poolList_table").empty();
+					$("#poolList_table").append(html);
+					$("#poolList").show();
+					$("#pool_table").show();
+					$("#addPool").hide();
 					
 				}
 
@@ -309,13 +298,13 @@ var Card={
 	
 	
 	//  新增卡牌
-	addCard:function(){
+	addPool:function(){
         $(".password").show();
-		$("#cardList").hide();
-		$("#addCard").show();
+		$("#poolList").hide();
+		$("#addPool").show();
 		
          $("#id").val("0");
-        $("#cardName").val("");
+        $("#poolName").val("");
         $("#disc").val("");
         $("#rare").val("");
         $("#pic").val("");
@@ -331,14 +320,14 @@ var Card={
         //$("#level").val("");
         // 重新渲染
         layui.form.render();
-		$("#addCardTitle").empty();
-		$("#addCardTitle").append("新增用户");
+		$("#addPoolTitle").empty();
+		$("#addPoolTitle").append("新增用户");
         
 	},
 	// 提交新增用户
-	commit_addCard:function(){
+	commit_addPool:function(){
 		
-		if($("#cardName").val()==""){
+		if($("#poolName").val()==""){
 			layui.layer.alert("请输入名称");
 			return;
 		}
@@ -383,10 +372,10 @@ var Card={
         
 
 		$.ajax({
-			url:request('/venne/updateCard'),
+			url:request('/venne/updatePool'),
 			data:{
 				id:$("#id").val(),
-				cardName:$("#cardName").val(),
+				poolName:$("#poolName").val(),
 				disc:$("#disc").val(),
 				pic:$("#pic").val(),
 				atk:$("#atk").val(),
@@ -405,9 +394,9 @@ var Card={
 				if(result.resultCode==1){
 					if($("#id").val()==0){
 						layer.alert("添加成功");
-                        $("#cardList").show();
-                        $("#addCard").hide();
-                        layui.table.reload("card_list",{
+                        $("#poolList").show();
+                        $("#addPool").hide();
+                        layui.table.reload("pool_list",{
                             page: {
                                 curr: 1 //重新从第 1 页开始
                             },
@@ -417,8 +406,8 @@ var Card={
 
 					}else{
 						layer.alert("修改成功");
-                        $("#cardList").show();
-                        $("#addCard").hide();
+                        $("#poolList").show();
+                        $("#addPool").hide();
                         renderTable();
 					}
 
@@ -435,18 +424,18 @@ var Card={
 		})
 	},
 	// 修改用户
-	updateCard:function(data,id){
+	updatePool:function(data,id){
         
         //$("#birthday").val("");
 		myFn.invoke({
-			url:request('/venne/getUpdateCard'),
+			url:request('/venne/getUpdatePool'),
 			data:{
 				id:data.id
 			},
 			success:function(result){
 				if(result.data!=null){
 					$("#id").val(result.data.id);
-					$("#cardName").val(result.data.cardName);
+					$("#poolName").val(result.data.poolName);
 					$("#disc").val(result.data.disc);
 					$("#sex").val(result.data.sex);
 					$("#atk").val(result.data.atk);
@@ -459,10 +448,10 @@ var Card={
 					$('#auth').val(result.data.auth);
 					$('#rare').val(result.data.rare);
 				}
-				$("#addCardTitle").empty();
-				$("#addCardTitle").append("修改卡牌");
-				$("#cardList").hide();
-				$("#addCard").show();
+				$("#addPoolTitle").empty();
+				$("#addPoolTitle").append("修改卡牌");
+				$("#poolList").hide();
+				$("#addPool").show();
                 layui.form.render();
 			}
 		});
@@ -470,43 +459,43 @@ var Card={
 	},
 
         // 多选删除用户
-        checkDeleteCards:function(){
+        checkDeletePools:function(){
             // 多选操作
-            var checkStatus = layui.table.checkStatus('card_list'); //idTest 即为基础参数 id 对应的值
+            var checkStatus = layui.table.checkStatus('pool_list'); //idTest 即为基础参数 id 对应的值
             
             
             
 		for (var i = 0; i < checkStatus.data.length; i++){
-			cardIds.push(checkStatus.data[i].id);
+			poolIds.push(checkStatus.data[i].id);
 		}
 		
 		if(0 == checkStatus.data.length){
 			layer.msg("请勾选要删除的行");
 			return;
 		}
-		Card.checkDeleteCardsImpl(cardIds.join(","),checkStatus.data.length);
+		Pool.checkDeletePoolsImpl(poolIds.join(","),checkStatus.data.length);
 	},
 
-    checkDeleteCardsImpl:function(id,checkLength){
+    checkDeletePoolsImpl:function(id,checkLength){
         layer.confirm('确定删除指定卡牌',{icon:3, title:'提示消息',yes:function () {
                 myFn.invoke({
-                    url:request('/venne/deleteCard'),
+                    url:request('/venne/deletePool'),
                     data:{
                         id:id
                     },
                     success:function(result){
                         if(result.resultCode==1){
                             layer.msg("删除成功",{"icon":1});
-                            cardIds = [];
+                            poolIds = [];
                             // renderTable();
-                            Common.tableReload(currentCount,currentPageIndex,checkLength,"card_list");
+                            Common.tableReload(currentCount,currentPageIndex,checkLength,"pool_list");
                         }
                     }
                 })
             },btn2:function () {
-                cardIds = [];
+                poolIds = [];
             },cancel:function () {
-                cardIds = [];
+                poolIds = [];
             }});
     },
 
@@ -516,12 +505,12 @@ var Card={
    
     button_back:function(){
 
-  		$("#cardList").show();
-  		$("#card_table").show();
-      $(".card_btn_div").show();
+  		$("#poolList").show();
+  		$("#pool_table").show();
+      $(".pool_btn_div").show();
   		
   		
-  		$("#addCard").hide();
+  		$("#addPool").hide();
       
 	},
  
