@@ -4,6 +4,7 @@ package com.fspringboot.SpringBootDemo.Controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -411,6 +412,142 @@ public class Controller{
 	/*******************************card*****************************************************/
 	
 	/*******************************pool*****************************************************/
+	@RequestMapping("/poolList")
+	public JSONObject poolList(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int limit, @RequestParam(defaultValue = "0") int type) {
+		
+		System.out.println(page);
+		System.out.println(limit);
+		
+		System.out.println("type: " + type);
+		Criteria criteria = new Criteria();
+		Query query = new Query(criteria);	
+		if(type != 0) {
+			query.addCriteria(Criteria.where("type").is(type));
+		}
+		
+		query.skip((page - 1) * limit);
+		query.limit(limit); 
+		
+		List<Pool> pools = this.mongotemplate.find(query, Pool.class);
+		
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("resultCode", 1);
+		
+		map.put("data",pools);
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		System.out.println("pool_List");
+		System.out.println(pools);
+		return object;
+	}
 	
+	@RequestMapping("/updatePool")
+	public JSONObject updatePool(@RequestParam(defaultValue = "") String id,
+								@RequestParam(defaultValue = "") String poolName, @RequestParam(defaultValue = "") int type,
+								@RequestParam(defaultValue = "") String pic, @RequestParam(defaultValue = "") int maxCnt) {
+		
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		System.out.println("id: " + id);
+		System.out.println("label: " + type);
+		
+		if(id.equals("0")) {
+			//注册
+			//判断是否存在card
+			Query query = new Query();
+			query.addCriteria(Criteria.where("poolName").is(poolName));
+			if(mongotemplate.findOne(query, Pool.class) != null) {
+				map.put("resultCode", -1);
+				map.put("data", "已存在同名卡池");
+				JSONObject object = (JSONObject) JSONObject.toJSON(map);
+				return object;
+			}
+			
+			Pool pool = new Pool();
+			pool.setPoolName(poolName);		
+			pool.setPic(pic);
+			pool.setMaxCnt(maxCnt);
+			pool.setType(type);
+			pool.setCnt(0);
+			pool.setIsOpen(true);
+			pool.setCreateTime(System.currentTimeMillis() / 1000);
+			pool.setUpdateTime(System.currentTimeMillis() / 1000);
+			
+			pool.setRaten(0);
+			pool.setRater(0);
+			pool.setRatesr(0);
+			pool.setRatessr(0);
+			pool.setRateblue(0);
+			pool.setRategreen(0);
+			pool.setRatered(0);
+			
+			Map<String, Integer> cardMap = new HashMap<String, Integer>();
+			pool.setCardMap(cardMap);
+			
+			
+			mongotemplate.insert(pool);
+		}else {
+			//修改
+			Update update = new Update();
+			update.set("poolName", poolName);
+			update.set("pic", pic);
+			update.set("maxCnt", maxCnt);
+			update.set("type", type);
+			
+			update.set("updateTime", System.currentTimeMillis() / 1000);
+			
+			Query query = new Query();
+			query.addCriteria(Criteria.where("id").is(id));
+			if(mongotemplate.findOne(query, Pool.class) == null) {
+				map.put("resultCode", -1);
+				HashMap<String, Object> mapFail = new HashMap<String, Object>();
+				mapFail.put("resultMsg","不存在card");
+				JSONObject objectFail = (JSONObject) JSONObject.toJSON(mapFail);
+				map.put("data", objectFail);
+				JSONObject object = (JSONObject) JSONObject.toJSON(map);
+				return object;
+			}
+			mongotemplate.findAndModify(query, update, Pool.class);
+		}
+		
+		
+		map.put("resultCode", 1);
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		System.out.println("updateCard");
+		return object;
+	}
+	
+	@RequestMapping("/getUpdatePool")
+	public JSONObject getUpdatePool(@RequestParam(defaultValue = "") String id) {
+		
+		System.out.println(id);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("resultCode", 1);
+		
+		
+		Query query = new Query();
+		query.addCriteria(Criteria.where("id").is(id));
+		if(mongotemplate.findOne(query, Pool.class) != null) {
+			Pool pool = mongotemplate.findOne(query, Pool.class);
+			map.put("data",pool);
+			
+			String poolName = mongotemplate.findOne(query, Pool.class).getPoolName();
+			System.out.println("name: " + poolName);
+		}else {
+			map.put("data","");
+		}
+		
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		return object;
+	}
+	
+	@RequestMapping("/deletePool")
+	public JSONObject deletePool() {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("resultCode", 1);
+		
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		System.out.println("card_deleteCard");
+		return object;
+	}
 	/*******************************pool*****************************************************/
 }

@@ -47,11 +47,29 @@
 				</div>
 			</div>
 		
+			<!-- 卡池管理 -->
+			<div id="myPoolCards" class="layui-card" style="margin-top: 1%;display: none;">
+				<div class="layui-card-header">池 “<span type="" class="disUserName"></span>” 的好友列表：</div>
+				<div class="layui-card-body">
+					<table id="myPools_table" lay-filter="myPools_table">
+
+					</table>
+					<button onclick="Pool.button_back()" class="layui-btn layui-btn-primary layui-btn-sm" style="">&lt;&lt;返回</button>
+				</div>
+			</div>
 
 			<!-- 多选操作 -->
 			<script type="text/html" id="toolbarPools">
 				<div class="layui-btn-container">
 					<button id="checkDeletePoolsId" class="layui-btn layui-btn-sm checkDeletePools" onclick="Pool.checkDeletePools()" lay-event="delete">多选删除</button>
+				</div>
+			</script>
+			
+			<script type="text/html" id="toolbarPoolsCards">
+				<div class="layui-btn-container">
+					<button class="layui-btn layui-btn-sm checkDeletePoolsCards" onclick="Pool.checkDeletePoolsCards()" lay-event="delete">多选删除</button>
+					<button id="friendsInfo_y" class="layui-btn layui-btn-sm friendsInfo" onclick="Pool.addPoolCards()">添加</button>
+
 				</div>
 			</script>
 
@@ -68,9 +86,17 @@
 				<a class="layui-btn layui-btn-primary layui-btn-xs update" lay-event="update">修改</a>
 				{{#  } }}
 
-				<a class="layui-btn layui-btn-primary layui-btn-xs updateMap" lay-event="updateMap">修改</a>
+				<a class="layui-btn layui-btn-primary layui-btn-xs updateMap" lay-event="updateMap">池管理</a>
 													
-			</script>		
+			</script>	
+			
+			<script type="text/html" id="delFriends">
+						
+				<a class="layui-btn layui-btn-danger layui-btn-xs deleteFriends" lay-event="deleteFriends">删除池</a>
+					
+				<a class="layui-btn layui-btn-primary layui-btn-xs moveBlacklist" lay-event="moveBlacklist">更改概率</a>
+					
+			</script>	
 
 				
 
@@ -91,9 +117,7 @@
 						<td>名称</td>
 						<td><input id="id" type="" name="" style="display: none"><input id="poolName" type="" name="" class="layui-input"></td>
 					</tr>
-				
-					
-					
+									
 					<tr>
 						<td>图片地址</td>
 						<td><input id="pic" type="" name="" class="layui-input" ></td>

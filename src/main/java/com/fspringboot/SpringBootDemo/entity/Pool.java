@@ -38,7 +38,7 @@ public class Pool{
 	
 	//卡牌/卡池
 	//概率：1~1000
-	private Map<String, Integer> cardMap;
+	private List<CardMap> cardMap;
 	
 	private Integer maxCnt = 1000;
 	
@@ -46,14 +46,54 @@ public class Pool{
 	private Integer cnt = 0;
 	
 	//必须通过修改cardMap设置
-	private Integer ratessr;
-	private Integer ratesr;
-	private Integer rater;
-	private Integer raten;
+	private Integer ratessr=0;
+	private Integer ratesr=0;
+	private Integer rater=0;
+	private Integer raten=0;
 	
-	private Integer ratered;
-	private Integer rateblue;
-	private Integer rategreen;
+	private Integer ratered=0;
+	private Integer rateblue=0;
+	private Integer rategreen=0;
+	
+	public static class CardMap{
+		private String cardId;
+		private String cardMapPic;
+		private String name;
+		private Integer rare;
+		private Integer rate;
+		
+		public Integer getRate() {
+			return rate;
+		}
+		public void setRate(Integer rate) {
+			this.rate = rate;
+		}
+		public Integer getRare() {
+			return rare;
+		}
+		public void setRare(Integer rare) {
+			this.rare = rare;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name= name;
+		}
+		public String getCardMapPic() {
+			return cardMapPic;
+		}
+		public void setCardMapPic(String cardMapPic) {
+			this.cardMapPic = cardMapPic;
+		}
+		public String getCardId() {
+			return cardId;
+		}
+		public void setCardId(String cardId) {
+			this.cardId = cardId;
+		}
+		
+	}
 	
 	/***************************************/
 	
@@ -109,11 +149,11 @@ public class Pool{
 		this.type = type;
 	}
 	
-	public Map<String, Integer> getCardMap(){
+	public List<CardMap> getCardMap(){
 		return cardMap;
 	}
 	
-	public void setCardMap(Map<String, Integer> cardMap) {
+	public void setCardMap(List<CardMap> cardMap) {
 		this.cardMap = cardMap;
 	}
 	
