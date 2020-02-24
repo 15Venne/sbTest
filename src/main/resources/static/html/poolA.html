@@ -38,9 +38,9 @@
 		
 			</div>
 
-			<div id="pool_table" class="layui-pool" style="margin-top: 1%">
-				<div class="layui-pool-header"><p>卡池列表</p></div>
-				<div class="layui-pool-body">
+			<div id="pool_table" class="layui-card" style="margin-top: 1%">
+				<div class="layui-card-header"><p>卡池列表</p></div>
+				<div class="layui-card-body">
 					<table id="pool_list" lay-filter="pool_list" style="table-layout:fixed;word-break:break-all;" >
 						
 					</table>
@@ -48,8 +48,8 @@
 			</div>
 		
 			<!-- 卡池管理 -->
-			<div id="myPoolCards" class="layui-card" style="margin-top: 1%;display: none;">
-				<div class="layui-card-header">池 “<span type="" class="disUserName"></span>” 的好友列表：</div>
+			<div id="myPoolCards" class="layui-card" style="margin-top: 2%;display: none;">
+				<div class="layui-card-header">池 “<span type="" class="disUserName"></span>” 的卡牌列表：</div>
 				<div class="layui-card-body">
 					<table id="myPools_table" lay-filter="myPools_table">
 
@@ -73,7 +73,7 @@
 				</div>
 			</script>
 
-			<!--操作-->
+			<!--操作 主界面 卡组池/卡池操作按钮-->
 			<script type="text/html" id="poolListBar">
 				{{#  if(d.poolId < 10100){ }}
 				<a class="layui-btn layui-btn-disabled layui-btn-xs delete" lay-event="delete">删除</a>
@@ -102,8 +102,8 @@
 
 		</div>
 
-		<!-- 添加用户 -->
-		<div id="addPool" class="layui-col-md10" style="display: none">
+		<!-- 添加卡池 -->
+		<div id="addPool" class="layui-col-md10" style="margin-top: 3%;display: none">
 			<div id="addPoolTitle" class="layui-pool-header">新增卡池</div>
 			<table class="layui-table">
 				<thead>
@@ -152,6 +152,71 @@
 				<button onclick="Pool.commit_addPool()" class="layui-btn">提交</button>
 				<button onclick="Pool.button_back()" class="layui-btn layui-btn-primary layui-btn-sm" style="">&lt;&lt;返回</button>
 			</div>
+		</div>
+		
+		<!-- 添加卡池cardMap -->
+		<div id="addCardMap" class="layui-col-md10" style="margin-top: 3%;display: none">
+			<div id="addCardMapTitle" class="layui-pool-header">新增卡池cardMap</div>
+			<div id="cardList" class="layui-col-md10">
+			<div class="card_btn_div" style="margin-top: 2%">
+				<input type="text" name="" class="layui-input cardName" style="width: 15%;display: inline" placeholder="卡牌名称"/>
+				<form class="layui-form" action="" style="float: left">				
+				</form>
+				<button class="layui-btn search_card">搜索</button>
+				<select id="rare1" class="layui-btn search_card1" style="line-height:38px; margin-left:10px">
+						<option selected="selected" value="">稀有度</option>
+						<option value="0">显示全部</option>
+						<option value="1">N</option>
+						<option value="2">R</option>
+						<option value="3">SR</option>
+						<option value="4">SSR</option>
+				</select>	
+				<select id="catagory1S" class="layui-btn search_cardC1" style="line-height:38px; margin-left:10px">
+						<option selected="selected" value="lazy">系列</option>
+						<option value="lazy">显示全部</option>
+						<option value="Red">Red</option>
+						<option value="Blue">Blue</option>
+						<option value="Green">Green</option>				
+				</select>		
+			</div>
+
+			<div id="card_table" class="layui-card" style="margin-top: 1%">
+				<div class="layui-card-header"><p>卡牌列表</p></div>
+				<div class="layui-card-body">
+					<table id="card_list" lay-filter="card_list" style="table-layout:fixed;word-break:break-all;" >
+						
+					</table>
+					<!-- <button onclick="Pool.commit_addPoolCards()" class="layui-btn">提交</button> -->
+					<button onclick="Pool.button_cardMapBack()" class="layui-btn layui-btn-primary layui-btn-sm" style="">&lt;&lt;返回</button>
+				</div>
+			</div>
+		
+
+			<!-- 多选操作 多选卡牌-->
+			<script type="text/html" id="toolbarCards">
+				<div class="layui-btn-container">
+					<button id="checkCardMapCardsId" class="layui-btn layui-btn-sm checkCardMapCards" onclick="Pool.checkCardMapCards()" lay-event="addCardsToCardMap">多选添加</button>
+				</div>
+			</script>
+
+			<!--操作 修改添加cardMap的cards时的概率-->
+			<script type="text/html" id="cardListBar">
+				
+				
+				<a class="layui-btn layui-btn-primary layui-btn-xs updateRate" lay-event="updateRate">添加</a>
+				
+													
+			</script>		
+
+				
+
+		</div>
+			<!-- 
+			<div style="display: inline;">
+				<button onclick="Pool.commit_addPoolCards()" class="layui-btn">提交</button>
+				<button onclick="Pool.button_cardMapBack()" class="layui-btn layui-btn-primary layui-btn-sm" style="">&lt;&lt;返回</button>
+			</div>
+			 -->
 		</div>
 
 

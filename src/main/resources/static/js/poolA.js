@@ -115,45 +115,18 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
              ,groups: 7
              ,cols: [[ //表头
                   {type:'checkbox',fixed:'left'}// 多选
-                 ,{field: 'toUserId', title: '好友Id', width:120,sort: true}
-                 ,{field: 'toNickname', title: '好友昵称', width:150,sort: true}
-                 ,{field: 'status', title: '状态',sort: true, width:120,templet : function (d) {
-                 		if(d.status == -1)
-                            return "黑名单";
-                 		else if(d.status == 1)
-                            return "关注"
-                        else if(d.status == 2)
-                            return "好友";
-				           }}
-                 ,{field: 'blacklist', title: '是否拉黑', width:120,sort: true,templet : function (d) {
-                         if(d.blacklist == 1)
-                             return "是";
-                         else
-                             return "否";
-                     }}
-                 ,{field: 'isBeenBlack', title: '是否被拉黑', width:120,sort: true,templet : function (d) {
-                         if(d.isBeenBlack == 1)
-                             return "是";
-                         else
-                             return "否";
-                     }}
-                 ,{field: 'offlineNoPushMsg', title: '是否消息免打扰',width: 150,sort: true,templet : function (d) {
-                         if(d.offlineNoPushMsg == 1)
-                             return "是";
-                         else
-                             return "否";
-                     }}
-                 ,{field: 'createTime', title: '成为好友的时间',width: 170,sort: true,templet: function(d){
-                         return UI.getLocalTime(d.createTime);}}
+                 ,{field: 'cardId', title: '卡牌/池Id', width:120,sort: true}
+                 ,{field: 'cardMapPic', title: '图片', width:150,sort: true}
+                 ,{field: 'name', title: '名字', width:150,sort: true}
+                 ,{field: 'rare', title: '稀有度', width:150,sort: true}
+                 ,{field: 'rate', title: '概率*1000', width:150,sort: true}
                  ,{fixed: 'right', width: 250,title:"操作", align:'left', toolbar: '#delFriends'}
               ]]
              ,done:function(res, curr, count){
-                 $("#user_table").hide();
-                 $("#myFriends").show();
-                 $(".user_btn_div").hide();
-                 if(localStorage.getItem("role")!=6){
-                     $(".friendsInfo").hide();
-                 }
+                 $("#pool_table").hide();
+                 $("#myPoolCards").show();
+                 $(".pool_btn_div").hide();
+                
                 var pageIndex = tableInsFriends.config.page.curr;//获取当前页码
                 var resCount = res.count;// 获取table总条数
                 currentCount = resCount;
@@ -310,6 +283,200 @@ var Pool={
 	},
 
 
+//  新增池cardMap
+	addPoolCards:function(){  
+			
+		
+        $("#id").val("0");
+        $("#poolName").val("");             
+        $("#pic").val("");                   
+        $("#type").val("");
+        $("#maxCnt").val("");
+                          
+        // 重新渲染
+        layui.form.render();
+		$("#addPoolTitle").empty();
+		$("#addPoolTitle").append("新增用户");
+		
+		//显示卡牌列表
+		 //卡牌列表
+		var table = layui.table;
+	    var tableInCard = table.render({
+	      elem: '#card_list'
+	      ,toolbar: '#toolbarCards'
+	      ,url:request("/venne/cardList")
+	      ,id: 'card_list'
+	      ,page: true
+	      ,curr: 0
+	      ,limit:Common.limit
+	      ,limits:Common.limits
+	      ,groups: 7,
+	      style:''
+	      ,cols: [[ //表头
+	           {type:'checkbox',fixed:'left'}// 多选
+	          ,{field: 'id', title: '卡牌id',sort:'true', width:100}
+	          ,{field: 'pic', title: '卡面',sort:'true', width:70, templet:'<div ><img src="{{d.pic}}" id="{{d.id}}"  onmouseover="over(id,divImage,imgbig)" onmouseout="out()"  alt="" style="max-width:100%;height:auto;"></div>'}
+	          ,{field: 'cardName', title: '名称',sort:'true', width:145}
+	          ,{field: 'atk', title: 'ATK',sort:'true', width:100}
+	          ,{field: 'def', title: 'DEF',sort:'true', width:100}
+	          ,{field: 'rare', title: '稀有度',sort:'true', width:100,templet: function(d){
+	        		if(d.rare == 1){
+	        			return "N";
+	        		}else if(d.rare == 2){
+	        			return "R";
+	        		}else if(d.rare == 3){
+	        			return "SR";
+	        		}else if(d.rare == 4){
+	        			return "SSR";
+	        		}else{
+	        			return "unknow";
+	        		}
+	        }}
+	          ,{field: 'disc', title: '描述',sort:'true', width:100}
+	          ,{field: 'label', title: 'label',sort:'true', width:100}
+	          ,{field: 'catagory1', title: '分类1',sort:'true', width:100}
+	          ,{field: 'catagory2', title: '分类2',sort:'true', width:100}
+	          ,{field: 'catagory3', title: '分类3',sort:'true', width:100}
+	         // ,{field: 'registerTime', title: '注册时间',sort:'true', width:170}
+	         // ,{field: 'createTime', title: '注册时间',sort:'true', width:170,templet: function(d){
+	         // 		return UI.getLocalTime(d.createTime);
+	         // }}
+	          ,{field: 'sex', title: '性别',sort:'true', width:100,templet: function(d){
+	          		return (d.sex==0?"女":"男");
+	          }}
+
+	          ,{field: 'auth', title: '作者',sort:'true', width:100}
+
+	          
+	          ,{fixed: 'right', width: 200,title:"操作", align:'left', toolbar: '#cardListBar'}
+	        ]]
+			  ,done:function(res, curr, count){
+	               if(count==0&&lock==1){
+	                 layer.msg("暂无数据",{"icon":2});
+	                 renderTable();
+	               }
+	               lock=0;
+	               	$("#myPoolCards").hide();
+	       			$("#addCardMap").show();
+	               
+	                $("#cardList").show();
+	                $("#card_table").show();
+	                //$("#addCard").hide();
+	               // $("#autoCreateUser").hide();
+	                //$("#exportUser").hide();
+	                 
+	                var pageIndex = tableInCard.config.page.curr;//获取当前页码
+	                var resCount = res.count;// 获取table总条数
+	                currentCount = resCount;
+	                currentPageIndex = pageIndex;
+			  }
+
+	    });
+	    
+	  //列表操作
+	    table.on('tool(card_list)', function(obj){
+	        var layEvent = obj.event,
+	              data = obj.data;
+	               
+	        if(layEvent === 'updateRate'){// 添加卡牌进抽卡池
+	            console.log("准备添加卡牌进抽卡池");
+	            //Pool.updateRate(obj.data,obj.data.id);
+	            layer.prompt({title: '请输入数量', formType: 0,value: '50'}, function(money, index){
+	                // 充值金额（正整数）的正则校验
+	  				if(!/^(?!00)(?:[0-9]{1,3}|1000)$/.test(money)){
+	                      layer.msg("请输入 1-1000 的整数",{"icon":2});
+	  					return;
+	  				}
+	  				Common.invoke({
+	  				      path : request('/venne/Recharge'),
+	  				      data : {
+	  				      	money:money,
+	  				      	userId:data.userId
+	  				      },
+	  				      successMsg : "充值成功",
+	  				      errorMsg :  "充值失败，请稍后重试",
+	  				      successCb : function(result) {
+
+	  				        var data = result.data; //DataSort(result.data);
+	  				      	layer.close(index); //关闭弹框
+
+	  				      },
+	  				      errorCb : function(result) {
+
+	  				      }
+	  			    });
+	 
+				  });
+	            
+	        }
+	    });
+		
+		
+        
+	},
+	// 提交新增卡池cardMap
+	commit_addPoolCards:function(){
+		
+		if($("#poolName").val()==""){
+			layui.layer.alert("请输入名称");
+			return;
+		}		
+        
+        if($("#type").val()==""){
+			layui.layer.alert("请选择池类型");
+            return;
+        }
+        if($("#maxCnt").val()==""){
+			layui.layer.alert("请输入上限");
+            return;
+        }
+        
+        
+
+		$.ajax({
+			url:request('/venne/updatePool'),
+			data:{
+				id:$("#id").val(),
+				poolName:$("#poolName").val(),
+				pic:$("#pic").val(),							
+				type:$("#type").val(),
+				maxCnt:$("#maxCnt").val()       
+			},
+			dataType:'json',
+			async:false,
+			success:function(result){
+				if(result.resultCode==1){
+					if($("#id").val()==0){
+						layer.alert("添加成功");
+                        $("#poolList").show();
+                        $("#addPool").hide();
+                        layui.table.reload("pool_list",{
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            },
+                            where: {
+                            }
+                        })
+
+					}else{
+						layer.alert("修改成功");
+                        $("#poolList").show();
+                        $("#addPool").hide();
+                        renderTable();
+					}
+
+				}else{
+					layer.alert(result.data.resultMsg);
+				}
+
+			},
+			error:function(result){
+				if(result.resultCode==0){
+					layer.alert(result.resultMsg);
+				}
+			}
+		})
+	},
 	
 	
 	//  新增卡池
@@ -326,7 +493,7 @@ var Pool={
         // 重新渲染
         layui.form.render();
 		$("#addPoolTitle").empty();
-		$("#addPoolTitle").append("新增用户");
+		$("#addPoolTitle").append("新增卡池");
         
 	},
 	// 提交新增卡池
@@ -470,10 +637,20 @@ var Pool={
   		$("#pool_table").show();
       $(".pool_btn_div").show();
   		
-  		
+      $("#myPoolCards").hide();
   		$("#addPool").hide();
       
 	},
+	button_cardMapBack:function(){
+
+  		$("#poolList").show();
+  		$("#myPoolCards").show();
+      //$(".pool_btn_div").show();
+  		
+      //$("#myPoolCards").hide();
+  		$("#addCardMap").hide();
+      
+	}
  
 
 }

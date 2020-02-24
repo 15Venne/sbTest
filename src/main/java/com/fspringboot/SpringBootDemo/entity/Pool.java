@@ -60,7 +60,7 @@ public class Pool{
 		private String cardMapPic;
 		private String name;
 		private Integer rare;
-		private Integer rate;
+		private Integer rate;//1~1000
 		
 		public Integer getRate() {
 			return rate;
