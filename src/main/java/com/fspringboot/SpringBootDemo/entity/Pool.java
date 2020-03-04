@@ -61,6 +61,15 @@ public class Pool{
 		private String name;
 		private Integer rare;
 		private Integer rate;//1~1000
+		private String catagory1;
+		
+		public String getCatagory1(){
+			return catagory1;
+		}
+		
+		public void setCatagory1(String catagory1) {
+			this.catagory1 = catagory1;
+		}
 		
 		public Integer getRate() {
 			return rate;

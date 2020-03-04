@@ -8,6 +8,9 @@ var id;
 var currentPageIndex;// 当前页码数
 var currentCount;// 当前总数
 
+var tmpPoolId;
+var tmpType;
+
 document.getElementById("divImage").style.display = "none";
 
 layui.use(['form','layer','laydate','table','laytpl'],function(){
@@ -98,8 +101,12 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
           
           Pool.updatePool(obj.data,obj.data.id);
       }else if(layEvent==='updateMap'){ //池管理
+    	  
     	  poolName = data.poolName;
      	  id = data.id; //给当前操作的那一行数据对应的用户的userId 记录，后面使用
+     	  tmpPoolId = data.id;
+     	  tmpType = data.type;
+     	  
         $(".disUserName").val(data.poolName);
 		      $(".disUserName").empty();
         $(".disUserName").append($(".disUserName").val());// 好友管理中的小标题用户昵称
@@ -116,10 +123,23 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
              ,cols: [[ //表头
                   {type:'checkbox',fixed:'left'}// 多选
                  ,{field: 'cardId', title: '卡牌/池Id', width:120,sort: true}
-                 ,{field: 'cardMapPic', title: '图片', width:150,sort: true}
+                 ,{field: 'cardMapPic', title: '图片', width:70,sort: true, templet:'<div ><img src="{{d.cardMapPic}}" id="{{d.id}}"  onmouseover="over(id,divImage,imgbig)" onmouseout="out()"  alt="" style="max-width:100%;height:auto;"></div>'}
                  ,{field: 'name', title: '名字', width:150,sort: true}
-                 ,{field: 'rare', title: '稀有度', width:150,sort: true}
-                 ,{field: 'rate', title: '概率*1000', width:150,sort: true}
+                 ,{field: 'rare', title: '稀有度', width:150,sort: true,templet: function(d){
+               		if(d.rare == 1){
+              			return "N";
+              		}else if(d.rare == 2){
+              			return "R";
+              		}else if(d.rare == 3){
+              			return "SR";
+              		}else if(d.rare == 4){
+              			return "SSR";
+              		}else{
+              			return "unknow";
+              		}
+                  }}
+                 ,{field: 'catagory1', title: '类别', width:150,sort: true}
+                 ,{field: 'rate', title: '数量', width:150,sort: true}
                  ,{fixed: 'right', width: 250,title:"操作", align:'left', toolbar: '#delFriends'}
               ]]
              ,done:function(res, curr, count){
@@ -284,14 +304,16 @@ var Pool={
 
 
 //  新增池cardMap
-	addPoolCards:function(){  
-			
+	addPoolCards:function(){ 
 		
-        $("#id").val("0");
-        $("#poolName").val("");             
-        $("#pic").val("");                   
-        $("#type").val("");
-        $("#maxCnt").val("");
+		console.log(tmpPoolId);
+			
+		//首先获取卡牌列表
+        //$("#id").val("0");
+        //$("#poolName").val("");             
+        //$("#pic").val("");                   
+        //$("#type").val("");
+        //$("#maxCnt").val("");
                           
         // 重新渲染
         layui.form.render();
@@ -377,7 +399,8 @@ var Pool={
 	    table.on('tool(card_list)', function(obj){
 	        var layEvent = obj.event,
 	              data = obj.data;
-	               
+	        console.log(tmpPoolId);   
+	        console.log(tmpType);
 	        if(layEvent === 'updateRate'){// 添加卡牌进抽卡池
 	            console.log("准备添加卡牌进抽卡池");
 	            //Pool.updateRate(obj.data,obj.data.id);
@@ -388,10 +411,12 @@ var Pool={
 	  					return;
 	  				}
 	  				Common.invoke({
-	  				      path : request('/venne/Recharge'),
+	  				      path : request('/venne/updatePoolCardMap'),
 	  				      data : {
-	  				      	money:money,
-	  				      	userId:data.userId
+	  				      	cnt:money,
+	  				      	poolId:tmpPoolId,
+	  				      	cardId:data.id,
+	  				      	type:tmpType
 	  				      },
 	  				      successMsg : "充值成功",
 	  				      errorMsg :  "充值失败，请稍后重试",
@@ -416,6 +441,8 @@ var Pool={
 	},
 	// 提交新增卡池cardMap
 	commit_addPoolCards:function(){
+		
+		
 		
 		if($("#poolName").val()==""){
 			layui.layer.alert("请输入名称");
