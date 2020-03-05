@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 @Controller
 public class WebController{
 	
+	
 	@RequestMapping("/play")
 	public String play() {
 		return "index";

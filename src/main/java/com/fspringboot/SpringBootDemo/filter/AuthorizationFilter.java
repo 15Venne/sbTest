@@ -55,7 +55,29 @@ public class AuthorizationFilter implements Filter {
         
         System.out.println("token: " + token);
         
-        if((token == null || (!token.equals("777")) )  &&   (!requestUri.contains("/play")) && (!requestUri.contains("/js/")) && 
+        if(requestUri.contains("%7B%7B")) {
+        	{
+        		try {
+        			HttpServletResponse t = (HttpServletResponse) response;
+        			t.setHeader("Access-Control-Allow-Origin", "*");
+        			t.setHeader("Access-Control-Allow-Methods",
+        					"POST, GET, OPTIONS, DELETE");
+        			t.setHeader("Access-Control-Max-Age", "3600");
+        			t.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+
+        			response.setContentType("application/json; charset=UTF-8");
+        			response.setCharacterEncoding("UTF-8");
+        			response.getWriter().write("授权认证失败");
+        			response.getWriter().flush();
+        			response.getWriter().close();
+        		} catch (Exception e) {
+        			throw new RuntimeException(e);
+        		}
+        	}
+        	return ;
+        }
+        
+        if( (token == null || (!token.equals("777")) )  &&   (!requestUri.contains("/play")) && (!requestUri.contains("/js/")) && 
         		(!requestUri.contains("/css/")) && (!requestUri.contains("/images/")) && (!requestUri.contains("/font/")) && (!requestUri.contains("/html/"))) {
         	
         	{

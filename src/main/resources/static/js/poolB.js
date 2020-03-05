@@ -28,7 +28,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
     var tableInPool = table.render({
       elem: '#pool_list'
       ,toolbar: '#toolbarPools'
-      ,url:request("/venne/poolList2")
+      ,url:request("/venne/poolList")
       ,id: 'pool_list'
       ,page: true
       ,curr: 0
@@ -56,11 +56,12 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
       			return "unknow";
       		}
           }}
-          ,{field: 'cnt', title: '当前卡牌/池数量',sort:'true', width:100}
+          ,{field: 'cnt', title: '当前卡池数量',sort:'true', width:100}
           ,{field: 'maxCnt', title: '最大卡牌/池数量',sort:'true', width:100}
-          ,{field: 'ratered', title: '红概率',sort:'true', width:100}
-          ,{field: 'rateblue', title: '蓝概率',sort:'true', width:100}
-          ,{field: 'rategreen', title: '绿概率',sort:'true', width:100}
+          ,{field: 'ratessr', title: 'SSR概率',sort:'true', width:100}
+          ,{field: 'ratesr', title: 'SR概率',sort:'true', width:100}
+          ,{field: 'rater', title: 'R概率',sort:'true', width:100}
+          ,{field: 'raten', title: 'N概率',sort:'true', width:100}
           
           ,{fixed: 'right', width: 200,title:"操作", align:'left', toolbar: '#poolListBar'}
         ]]
@@ -98,6 +99,8 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
           Pool.updatePool(obj.data,obj.data.id);
       }else if(layEvent==='updateMap'){ //池管理
     	  
+    	  //显示的是池列表
+    	  
     	  poolName = data.poolName;
      	  id = data.id; //给当前操作的那一行数据对应的用户的userId 记录，后面使用
      	  tmpPoolId = data.id;
@@ -134,8 +137,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
               			return "unknow";
               		}
                   }}
-                 ,{field: 'catagory1', title: '类别', width:150,sort: true}
-                 ,{field: 'rate', title: '数量', width:150,sort: true}
+                 ,{field: 'rate', title: '比率', width:150,sort: true}
                  ,{fixed: 'right', width: 250,title:"操作", align:'left', toolbar: '#delFriends'}
               ]]
              ,done:function(res, curr, count){
@@ -148,23 +150,6 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                 currentCount = resCount;
                 currentPageIndex = pageIndex;
              }
-        });
-        
-        //列表操作
-        table.on('tool(myPools_table)', function(obj){
-            var layEvent = obj.event,
-                  data = obj.data;
-                   
-            if(layEvent === 'deleteFriends'){ //删除  
-                   
-                console.log('删除卡牌');
-            }else if(layEvent === 'updateCardRate'){// 修改卡牌
-                
-                console.log('修改比率');
-            }else{
-            	
-            }
-            
         });
 
   
@@ -321,7 +306,8 @@ var Pool={
 		
 		console.log(tmpPoolId);
 			
-		//首先获取卡牌列表
+		//首先获取卡池列表
+		
         //$("#id").val("0");
         //$("#poolName").val("");             
         //$("#pic").val("");                   
@@ -333,13 +319,13 @@ var Pool={
 		$("#addPoolTitle").empty();
 		$("#addPoolTitle").append("新增用户");
 		
-		//显示卡牌列表
-		 //卡牌列表
+		//显示卡池列表
+		 //卡池列表
 		var table = layui.table;
 	    var tableInCard = table.render({
 	      elem: '#card_list'
 	      ,toolbar: '#toolbarCards'
-	      ,url:request("/venne/cardList")
+	      ,url:request("/venne/poolList2")
 	      ,id: 'card_list'
 	      ,page: true
 	      ,curr: 0
@@ -349,41 +335,30 @@ var Pool={
 	      style:''
 	      ,cols: [[ //表头
 	           {type:'checkbox',fixed:'left'}// 多选
-	          ,{field: 'id', title: '卡牌id',sort:'true', width:100}
-	          ,{field: 'pic', title: '卡面',sort:'true', width:70, templet:'<div ><img src="{{d.pic}}" id="{{d.id}}"  onmouseover="over(id,divImage,imgbig)" onmouseout="out()"  alt="" style="max-width:100%;height:auto;"></div>'}
-	          ,{field: 'cardName', title: '名称',sort:'true', width:145}
-	          ,{field: 'atk', title: 'ATK',sort:'true', width:100}
-	          ,{field: 'def', title: 'DEF',sort:'true', width:100}
-	          ,{field: 'rare', title: '稀有度',sort:'true', width:100,templet: function(d){
-	        		if(d.rare == 1){
-	        			return "N";
-	        		}else if(d.rare == 2){
-	        			return "R";
-	        		}else if(d.rare == 3){
-	        			return "SR";
-	        		}else if(d.rare == 4){
-	        			return "SSR";
-	        		}else{
-	        			return "unknow";
-	        		}
-	        }}
-	          ,{field: 'disc', title: '描述',sort:'true', width:100}
-	          ,{field: 'label', title: 'label',sort:'true', width:100}
-	          ,{field: 'catagory1', title: '分类1',sort:'true', width:100}
-	          ,{field: 'catagory2', title: '分类2',sort:'true', width:100}
-	          ,{field: 'catagory3', title: '分类3',sort:'true', width:100}
-	         // ,{field: 'registerTime', title: '注册时间',sort:'true', width:170}
-	         // ,{field: 'createTime', title: '注册时间',sort:'true', width:170,templet: function(d){
-	         // 		return UI.getLocalTime(d.createTime);
-	         // }}
-	          ,{field: 'sex', title: '性别',sort:'true', width:100,templet: function(d){
-	          		return (d.sex==0?"女":"男");
-	          }}
-
-	          ,{field: 'auth', title: '作者',sort:'true', width:100}
-
-	          
-	          ,{fixed: 'right', width: 200,title:"操作", align:'left', toolbar: '#cardListBar'}
+	           ,{field: 'id', title: '卡池id',sort:'true', width:100}
+	           ,{field: 'pic', title: '封面',sort:'true', width:70, templet:'<div ><img src="{{d.pic}}" id="{{d.id}}"  onmouseover="over(id,divImage,imgbig)" onmouseout="out()"  alt="" style="max-width:100%;height:auto;"></div>'}
+	           ,{field: 'poolName', title: '名称',sort:'true', width:145}
+	           ,{field: 'type', title: '类型',sort:'true', width:100,templet: function(d){
+	       		if(d.type == 1){
+	       			return "卡组池";
+	       		}else if(d.type == 2){
+	       			return "N池";
+	       		}else if(d.type == 3){
+	       			return "R池";
+	       		}else if(d.type == 4){
+	       			return "SR池";
+	       		}else if(d.type == 5){
+	       			return "SSR池";
+	       		}else{
+	       			return "unknow";
+	       		}
+	           }}
+	           ,{field: 'cnt', title: '当前卡牌数量',sort:'true', width:100}
+	           ,{field: 'maxCnt', title: '最大卡牌数量',sort:'true', width:100}
+	           ,{field: 'ratered', title: '红比率',sort:'true', width:100}
+	           ,{field: 'rateblue', title: '蓝比率',sort:'true', width:100}
+	           ,{field: 'rategreen', title: '绿比率',sort:'true', width:100}
+	           ,{fixed: 'right', width: 200,title:"操作", align:'left', toolbar: '#cardListBar'}
 	        ]]
 			  ,done:function(res, curr, count){
 	               if(count==0&&lock==1){

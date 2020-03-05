@@ -15,13 +15,13 @@
 			"cardManagement": true,
 			"children": [
 				{
-					"title": "总池",
+					"title": "分池",
 					"icon": "&#xe857;",
 					"href": "/html/poolA.html",
 					"spread": false
 				},
 				{
-					"title": "SSR池",
+					"title": "总池",
 					"icon": "&#xe857;",
 					"href": "/html/poolB.html",
 					"spread": false

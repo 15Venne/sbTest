@@ -413,6 +413,8 @@ public class Controller{
 	/*******************************card*****************************************************/
 	
 	/*******************************pool*****************************************************/
+	
+	//获取总池
 	@RequestMapping("/poolList")
 	public JSONObject poolList(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int limit, @RequestParam(defaultValue = "0") int type) {
@@ -423,9 +425,44 @@ public class Controller{
 		System.out.println("type: " + type);
 		Criteria criteria = new Criteria();
 		Query query = new Query(criteria);	
+		query.addCriteria(Criteria.where("type").is(1));
+		//if(type != 0) {
+		//	query.addCriteria(Criteria.where("type").is(type));
+		//}
+		
+		query.skip((page - 1) * limit);
+		query.limit(limit); 
+		
+		List<Pool> pools = this.mongotemplate.find(query, Pool.class);
+		
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("resultCode", 1);
+		
+		map.put("data",pools);
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		System.out.println("pool_List");
+		System.out.println(pools);
+		return object;
+	}
+	
+	//获取分池
+	@RequestMapping("/poolList2")
+	public JSONObject poolList2(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int limit, @RequestParam(defaultValue = "0") int type) {
+		
+		System.out.println(page);
+		System.out.println(limit);
+		
+		System.out.println("type: " + type);
+		Criteria criteria = new Criteria();
+		criteria.orOperator(Criteria.where("type").is(2), Criteria.where("type").is(3),
+							Criteria.where("type").is(4), Criteria.where("type").is(5));
+		
+		Query query = new Query(criteria);	
 		if(type != 0) {
 			query.addCriteria(Criteria.where("type").is(type));
 		}
+		
 		
 		query.skip((page - 1) * limit);
 		query.limit(limit); 
@@ -617,6 +654,7 @@ public class Controller{
 		Query queryCard = new Query();
 		queryCard.addCriteria(Criteria.where("id").is(cardId));
 		Card card = null;
+		Pool pool2 = null;
 		if(type == 1) {//cardId仍为一个pool的Id,但type为2以上
 			if(mongotemplate.findOne(queryCard, Pool.class) == null || mongotemplate.findOne(queryCard, Pool.class).getType() < 2) {
 				map.put("resultCode", -1);
@@ -627,7 +665,7 @@ public class Controller{
 				JSONObject object = (JSONObject) JSONObject.toJSON(map);
 				return object;
 			}
-			Pool pool2 = mongotemplate.findOne(queryCard, Pool.class);
+			pool2 = mongotemplate.findOne(queryCard, Pool.class);
 			
 			targetName = pool2.getPoolName();
 			targetPic = pool2.getPic();
@@ -670,15 +708,15 @@ public class Controller{
 		update.set("cardMap", cardMapData);
 		if(type == 1) { // 卡组池，修改ratessr,ratesr,rater,raten
 			
-			Integer typeP = pool.getType();
+			Integer typeP = pool2.getType();
 			if(typeP == 2) {
-				update.set("raten", pool.getRaten() + 1);
+				update.set("raten", pool.getRaten() + cnt);
 			}else if(typeP == 3) {
-				update.set("rater", pool.getRater() + 1);
+				update.set("rater", pool.getRater() + cnt);
 			}else if(typeP == 4) {
-				update.set("ratesr", pool.getRatesr() + 1);
+				update.set("ratesr", pool.getRatesr() + cnt);
 			}else if(typeP == 5) {
-				update.set("ratessr", pool.getRatessr() + 1);
+				update.set("ratessr", pool.getRatessr() + cnt);
 			}
 			
 			
