@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -608,6 +609,129 @@ public class Controller{
 		return object;
 	}
 	
+	@RequestMapping("/deletePoolCardMap")
+	public JSONObject deletePoolCardMap(@RequestParam(defaultValue = "") String poolId,@RequestParam(defaultValue = "") int type,
+										@RequestParam(defaultValue = "") String cardId) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		//找出pool
+		Query queryPool = new Query();
+		queryPool.addCriteria(Criteria.where("id").is(poolId));
+		if(mongotemplate.findOne(queryPool, Pool.class) == null) {
+			map.put("resultCode", -1);
+			HashMap<String, Object> mapFail = new HashMap<String, Object>();
+			mapFail.put("resultMsg","不存在pool");
+			JSONObject objectFail = (JSONObject) JSONObject.toJSON(mapFail);
+			map.put("data", objectFail);
+			JSONObject object = (JSONObject) JSONObject.toJSON(map);
+			return object;
+		}
+		Pool pool = mongotemplate.findOne(queryPool, Pool.class);
+		Integer getType = pool.getType();
+		if(!getType.equals(type)) {
+			//type不统一
+			map.put("resultCode", -1);
+			HashMap<String, Object> mapFail = new HashMap<String, Object>();
+			mapFail.put("resultMsg","池的类型错误");
+			JSONObject objectFail = (JSONObject) JSONObject.toJSON(mapFail);
+			map.put("data", objectFail);
+			JSONObject object = (JSONObject) JSONObject.toJSON(map);
+			return object;
+		}
+		List<CardMap> cardMapData = pool.getCardMap();
+		
+		//找出card
+		Query queryCard = new Query();
+		queryCard.addCriteria(Criteria.where("id").is(cardId));
+		Card card = null;
+		Pool pool2 = null;
+		if(type == 1) {//cardId仍为一个pool的Id,但type为2以上
+			if(mongotemplate.findOne(queryCard, Pool.class) == null || mongotemplate.findOne(queryCard, Pool.class).getType() < 2) {
+				map.put("resultCode", -1);
+				HashMap<String, Object> mapFail = new HashMap<String, Object>();
+				mapFail.put("resultMsg","不存在pool(2)");
+				JSONObject objectFail = (JSONObject) JSONObject.toJSON(mapFail);
+				map.put("data", objectFail);
+				JSONObject object = (JSONObject) JSONObject.toJSON(map);
+				return object;
+			}
+			pool2 = mongotemplate.findOne(queryCard, Pool.class);
+				
+			
+		}else { // cardId为一张卡牌,且稀有度为type-1
+			if(mongotemplate.findOne(queryCard, Card.class) == null || mongotemplate.findOne(queryCard, Card.class).getRare() != type -1){
+				map.put("resultCode", -1);
+				HashMap<String, Object> mapFail = new HashMap<String, Object>();
+				mapFail.put("resultMsg","不存在card或稀有度错误");
+				JSONObject objectFail = (JSONObject) JSONObject.toJSON(mapFail);
+				map.put("data", objectFail);
+				JSONObject object = (JSONObject) JSONObject.toJSON(map);
+				return object;
+			}
+			card = mongotemplate.findOne(queryCard, Card.class);	
+			
+		}
+		
+		CardMap tcm = null;
+		Integer cnt = 0;
+		
+		if(0 != cardMapData.stream().filter(c -> c.getCardId().equals(cardId)).count()) {
+			tcm = cardMapData.stream().filter(c -> c.getCardId().equals(cardId)).findFirst().get();
+			cnt = tcm.getRate();
+			cardMapData.remove(tcm);
+		}
+		
+		//修改数据库
+		Update update = new Update();
+		update.set("cardMap", cardMapData);
+		if(type == 1) { // 卡组池，修改ratessr,ratesr,rater,raten
+			
+			Integer typeP = pool2.getType();
+			if(typeP == 2) {
+				update.set("raten", pool.getRaten() - cnt);
+			}else if(typeP == 3) {
+				update.set("rater", pool.getRater() - cnt);
+			}else if(typeP == 4) {
+				update.set("ratesr", pool.getRatesr() - cnt);
+			}else if(typeP == 5) {
+				update.set("ratessr", pool.getRatessr() - cnt);
+			}
+			
+			
+		}else {// 卡牌池，修改ratered,rateblue,rategreen
+			
+			String typeP = mongotemplate.findOne(queryCard, Card.class).getCatagory1();
+			System.out.println(typeP);
+			
+			if(typeP.equals("Blue")) {
+				 
+				update.set("rateblue", pool.getRateblue() - cnt);
+			}else if(typeP.equals("Red")) {
+				
+				update.set("ratered", pool.getRatered() - cnt);
+			}else if(typeP.equals("Green")) {
+				
+				update.set("rategreen", pool.getRategreen() - cnt);
+			}
+			
+		}
+		update.set("cnt", pool.getCnt() - cnt);			
+		update.set("updateTime", System.currentTimeMillis() / 1000);
+			
+		Query query = new Query();
+		query.addCriteria(Criteria.where("id").is(poolId));	
+		mongotemplate.findAndModify(query, update, Pool.class);
+			
+		map.put("resultCode", 1);
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		System.out.println("updatePoolCardMap");
+		return object;
+		
+		
+				
+	}
+	
+	
+	
 	@RequestMapping("/updatePoolCardMap")
 	public JSONObject updatePoolCardMap(@RequestParam(defaultValue = "") String poolId,@RequestParam(defaultValue = "") int type,
 								@RequestParam(defaultValue = "") String cardId, @RequestParam(defaultValue = "") int cnt) {
@@ -699,8 +823,21 @@ public class Controller{
 		targetCardMap.setRate(targetRate);
 		targetCardMap.setCatagory1(targetCatagory1);
 		
-		//插入列表
-		cardMapData.add(targetCardMap);
+		//插入/修改列表
+		//List<CardMap> tmpCardMap = null;
+		Integer tmpCnt0 = 0;
+		CardMap tcm = null;
+		
+		//tmpCardMap = cardMapData.stream().filter(c -> c.getCardId().equals(targetId)).collect(Collectors.toList());
+		if(cardMapData.stream().filter(c -> c.getCardId().equals(targetId)).count() != 0) { //如果cardMapData中含有同Id的卡牌/池
+			tcm = cardMapData.stream().filter(c -> c.getCardId().equals(targetId)).findFirst().get();
+			System.out.println("tcm is not null");
+			tmpCnt0 = tcm.getRate();
+			cnt = cnt - tmpCnt0;
+			cardMapData.remove(tcm); //先删除
+		} 
+		cardMapData.add(targetCardMap);//再插入
+		
 		
 		
 		//修改数据库
