@@ -71,18 +71,14 @@
 
 			<!--操作 主界面 卡组池/卡池操作按钮-->
 			<script type="text/html" id="poolListBar">
-				{{#  if(d.poolId < 10100){ }}
-				<a class="layui-btn layui-btn-disabled layui-btn-xs delete" lay-event="delete">删除</a>
-				{{#  }else{  }}
+				
 				<a class="layui-btn layui-btn-danger layui-btn-xs delete" lay-event="delete">删除</a>
-				{{#  } }}
-				{{#  if(d.poolId < 10100){ }}
-				<a class="layui-btn layui-btn-disabled layui-btn-xs update" lay-event="update">修改</a>
-				{{#  }else{  }}
+						
 				<a class="layui-btn layui-btn-primary layui-btn-xs update" lay-event="update">修改</a>
-				{{#  } }}
 
 				<a class="layui-btn layui-btn-primary layui-btn-xs updateMap" lay-event="updateMap">池管理</a>
+
+				<a class="layui-btn layui-btn-primary layui-btn-xs poolReset" lay-event="poolReset">归零</a>
 													
 			</script>	
 			
@@ -90,7 +86,7 @@
 						
 				<a class="layui-btn layui-btn-danger layui-btn-xs deleteFriends" lay-event="deleteFriends">删除池</a>
 					
-				<a class="layui-btn layui-btn-primary layui-btn-xs moveBlacklist" lay-event="moveBlacklist">更改概率</a>
+				<a class="layui-btn layui-btn-primary layui-btn-xs updateCardRate" lay-event="updateCardRate">更改概率</a>
 					
 			</script>	
 

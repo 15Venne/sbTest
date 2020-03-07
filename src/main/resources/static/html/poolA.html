@@ -74,18 +74,14 @@
 
 			<!--操作 主界面 卡组池/卡池操作按钮-->
 			<script type="text/html" id="poolListBar">
-				{{#  if(d.poolId < 10100){ }}
-				<a class="layui-btn layui-btn-disabled layui-btn-xs delete" lay-event="delete">删除</a>
-				{{#  }else{  }}
-				<a class="layui-btn layui-btn-danger layui-btn-xs delete" lay-event="delete">删除</a>
-				{{#  } }}
-				{{#  if(d.poolId < 10100){ }}
-				<a class="layui-btn layui-btn-disabled layui-btn-xs update" lay-event="update">修改</a>
-				{{#  }else{  }}
+				
+				<a class="layui-btn layui-btn-danger layui-btn-xs delete" lay-event="delete">删除</a>	
+				
 				<a class="layui-btn layui-btn-primary layui-btn-xs update" lay-event="update">修改</a>
-				{{#  } }}
 
 				<a class="layui-btn layui-btn-primary layui-btn-xs updateMap" lay-event="updateMap">池管理</a>
+
+				<a class="layui-btn layui-btn-primary layui-btn-xs poolReset" lay-event="poolReset">归零</a>
 													
 			</script>	
 			
@@ -162,7 +158,7 @@
 				<form class="layui-form" action="" style="float: left">				
 				</form>
 				<button class="layui-btn search_card">搜索</button>
-				<select id="rare1" class="layui-btn search_card1" style="line-height:38px; margin-left:10px">
+				<select id="rare2" class="layui-btn search_card1" style="line-height:38px; margin-left:10px">
 						<option selected="selected" value="">稀有度</option>
 						<option value="0">显示全部</option>
 						<option value="1">N</option>
@@ -171,7 +167,7 @@
 						<option value="4">SSR</option>
 				</select>	
 				<select id="catagory1S" class="layui-btn search_cardC1" style="line-height:38px; margin-left:10px">
-						<option selected="selected" value="lazy">系列</option>
+						<option selected="selected" value="">系列</option>
 						<option value="lazy">显示全部</option>
 						<option value="Red">Red</option>
 						<option value="Blue">Blue</option>

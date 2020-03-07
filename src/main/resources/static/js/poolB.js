@@ -63,7 +63,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
           ,{field: 'rater', title: 'R概率',sort:'true', width:100}
           ,{field: 'raten', title: 'N概率',sort:'true', width:100}
           
-          ,{fixed: 'right', width: 200,title:"操作", align:'left', toolbar: '#poolListBar'}
+          ,{fixed: 'right', width: 300,title:"操作", align:'center', toolbar: '#poolListBar'}
         ]]
 		  ,done:function(res, curr, count){
                if(count==0&&lock==1){
@@ -151,8 +151,107 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                 currentPageIndex = pageIndex;
              }
         });
+        
+        //列表操作
+        table.on('tool(myPools_table)', function(obj){
+            var layEvent = obj.event,
+                  data = obj.data;
+                   
+            if(layEvent === 'deleteFriends'){ //删除  
+                   
+                console.log('删除卡牌');
+                layer.confirm('确定删除？',{icon:3, title:'提示信息'},function(index){
+                Common.invoke({
+				      path : request('/venne/deletePoolCardMap'),
+				      data : {
+				      	
+				      	poolId:tmpPoolId,
+				      	cardId:data.cardId,
+				      	type:tmpType
+				      },
+				      successMsg : "删除成功",
+				      errorMsg :  "删除失败，请稍后重试",
+				      successCb : function(result) {
+
+				        var data = result.data; //DataSort(result.data);
+				      	layer.close(index); //关闭弹框
+				      	renderMyPoolsTable();
+
+				      },
+				      errorCb : function(result) {
+
+				      }
+			    });
+                });
+                
+            }else if(layEvent === 'updateCardRate'){// 修改卡牌
+                
+                console.log('修改比率');
+                console.log("准备添加卡牌进抽卡池");
+	            //Pool.updateRate(obj.data,obj.data.id);
+                
+	            layer.prompt({title: '请输入数量', formType: 0,value: '50'}, function(money,index){
+	                // 充值金额（正整数）的正则校验
+	  				if(!/^(?!00)(?:[0-9]{1,3}|1000)$/.test(money)){
+	                      layer.msg("请输入 1-1000 的整数",{"icon":2});
+	  					return;
+	  				}
+	  				Common.invoke({
+	  				      path : request('/venne/updatePoolCardMap'),
+	  				      data : {
+	  				      	cnt:money,
+	  				      	poolId:tmpPoolId,
+	  				      	cardId:data.cardId,
+	  				      	type:tmpType
+	  				      },
+	  				      successMsg : "修改成功",
+	  				      errorMsg :  "修改失败，请稍后重试",
+	  				      successCb : function(result) {
+
+	  				        var data = result.data; //DataSort(result.data);
+	  				      	layer.close(index); //关闭弹框
+	  				      	renderMyPoolsTable();
+
+	  				      },
+	  				      errorCb : function(result) {
+
+	  				      }
+	  			    });
+	 
+				  });
+                
+            }else{
+            	
+            }
+            
+        });
+        
 
   
+      }else if(layEvent==='poolReset'){ //池管理
+    	  console.log('重置卡池');
+          layer.confirm('确定删除？',{icon:3, title:'提示信息'},function(index){
+          Common.invoke({
+			      path : request('/venne/poolreset'),
+			      data : {		      	
+			      	poolId:data.id	      	
+			      },
+			      successMsg : "重置成功",
+			      errorMsg :  "重置失败，请稍后重试",
+			      successCb : function(result) {
+
+			        var data = result.data; //DataSort(result.data);
+			      	layer.close(index); //关闭弹框
+			      	renderTable();
+
+			      },
+			      errorCb : function(result) {
+
+			      }
+		    });
+          });
+    	  
+    	  
       }
 
   });
@@ -248,6 +347,36 @@ function renderTable(){
     })
   });
  }
+
+function renderMyPoolsTable(){
+	  layui.use('table', function(){
+	   var table = layui.table;//高版本建议把括号去掉，有的低版本，需要加()
+	   
+	   table.reload("myPools_table",{
+	        page: {
+	            curr: 1 //重新从第 1 页开始
+	        },
+	        where: {
+	            
+	        }
+	    })
+	  });
+}
+
+function renderCardListTable(){
+	  layui.use('table', function(){
+	   var table = layui.table;//高版本建议把括号去掉，有的低版本，需要加()
+	   
+	   table.reload("card_list",{
+	        page: {
+	            curr: 1 //重新从第 1 页开始
+	        },
+	        where: {
+	            
+	        }
+	    })
+	  });
+}
 
 
 

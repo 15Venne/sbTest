@@ -897,5 +897,52 @@ public class Controller{
 		System.out.println("card_deleteCard");
 		return object;
 	}
+	
+	@RequestMapping("/poolreset")
+	public JSONObject poolreset(@RequestParam(defaultValue = "") String poolId) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		System.out.println("poolId: " + poolId);
+		
+		//找出pool
+		Query queryPool = new Query();
+		queryPool.addCriteria(Criteria.where("id").is(poolId));
+		if(mongotemplate.findOne(queryPool, Pool.class) == null) {
+			map.put("resultCode", -1);
+			HashMap<String, Object> mapFail = new HashMap<String, Object>();
+			mapFail.put("resultMsg","不存在pool");
+			JSONObject objectFail = (JSONObject) JSONObject.toJSON(mapFail);
+			map.put("data", objectFail);
+			JSONObject object = (JSONObject) JSONObject.toJSON(map);
+			return object;
+		}
+		//Pool pool = mongotemplate.findOne(queryPool, Pool.class);
+		
+		List<CardMap> cardMaps = new ArrayList<CardMap>();
+		//pool.setCardMap(cardMaps);
+		
+		//修改数据库
+		Update update = new Update();
+		update.set("cardMap", cardMaps);
+		update.set("raten", 0);
+		update.set("rater", 0);
+		update.set("ratesr", 0);
+		update.set("ratessr", 0);
+		update.set("rateblue", 0);
+		update.set("ratered", 0);
+		update.set("rategreen", 0);
+		update.set("cnt", 0);
+		update.set("updateTime", System.currentTimeMillis() / 1000);
+		
+		Query query = new Query();
+		query.addCriteria(Criteria.where("id").is(poolId));	
+		mongotemplate.findAndModify(query, update, Pool.class);
+		
+		map.put("resultCode", 1);
+		
+		JSONObject object = (JSONObject) JSONObject.toJSON(map);
+		System.out.println("card_deleteCard");
+		return object;
+	}
 	/*******************************pool*****************************************************/
 }

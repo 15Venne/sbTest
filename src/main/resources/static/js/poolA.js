@@ -62,7 +62,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
           ,{field: 'rateblue', title: '蓝概率',sort:'true', width:100}
           ,{field: 'rategreen', title: '绿概率',sort:'true', width:100}
           
-          ,{fixed: 'right', width: 200,title:"操作", align:'left', toolbar: '#poolListBar'}
+          ,{fixed: 'right', width: 300,title:"操作", align:'center', toolbar: '#poolListBar'}
         ]]
 		  ,done:function(res, curr, count){
                if(count==0&&lock==1){
@@ -188,7 +188,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                 console.log("准备添加卡牌进抽卡池");
 	            //Pool.updateRate(obj.data,obj.data.id);
                 
-	            layer.prompt({title: '请输入数量', formType: 0,value: '50'}, function(index){
+	            layer.prompt({title: '请输入数量', formType: 0,value: '50'}, function(money, index){
 	                // 充值金额（正整数）的正则校验
 	  				if(!/^(?!00)(?:[0-9]{1,3}|1000)$/.test(money)){
 	                      layer.msg("请输入 1-1000 的整数",{"icon":2});
@@ -227,6 +227,30 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
         
 
   
+      }else if(layEvent==='poolReset'){ //池管理
+    	  console.log('删除卡牌');
+          layer.confirm('确定删除？',{icon:3, title:'提示信息'},function(index){
+          Common.invoke({
+			      path : request('/venne/poolreset'),
+			      data : {		      	
+			      	poolId:data.id	      	
+			      },
+			      successMsg : "重置成功",
+			      errorMsg :  "重置失败，请稍后重试",
+			      successCb : function(result) {
+
+			        var data = result.data; //DataSort(result.data);
+			      	layer.close(index); //关闭弹框
+			      	renderTable();
+
+			      },
+			      errorCb : function(result) {
+
+			      }
+		    });
+          });
+    	  
+    	  
       }
 
   });
@@ -241,7 +265,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                 curr: 1 //重新从第 1 页开始
             },
             where: {      
-                keyWorld : $(".poolName").val()  //搜索的关键字
+                rare : $(".poolName").val()  //搜索的关键字
             }
         })
         lock=1;
@@ -538,7 +562,64 @@ var Pool={
 	            
 	        }
 	    });
+	    
+	    var rare2pre;
+	    var catagory1Spre;
+	    //按类型显示卡牌
+	    $(".search_card1").on("click",function(){
+	        // 关闭超出宽度的弹窗
+	        $(".layui-layer-content").remove();
+	        if($("#rare2").val() == rare2pre){
+	        	return ;
+	        }
+	        if($("#rare2").val() == ""){
+	        	return;
+	        }
+	        rare2pre = $("#rare2").val();
+	       
+	        table.reload("card_list",{
+	            page: {
+	                curr: 1 //重新从第 1 页开始
+	            },
+	            where: {
+	                rare:$("#rare2").val(),
+	                catagory1:catagory1Spre
+	               
+	            }
+	        })
+	        lock=1;
+	        $(".poolName").val('');
+	        
+	    });
+	    
+	    $(".search_cardC1").on("click",function(){
+	        // 关闭超出宽度的弹窗
+	        $(".layui-layer-content").remove();
+	        if($("#catagory1S").val() == catagory1Spre){
+	        	return ;
+	        }
+	        
+	        if($("#catagory1S").val() == ""){
+	        	return ;
+	        }
+	        
+	        catagory1Spre = $("#catagory1S").val();
+	        table.reload("card_list",{
+	            page: {
+	                curr: 1 //重新从第 1 页开始
+	            },
+	            where: {
+	                rare:rare2pre,
+	                catagory1:$("#catagory1S").val()
+	               
+	            }
+	        })
+	        lock=1;
+	        $(".poolName").val('');
+	        
+	    });
 		
+	    
 		
         
 	},
